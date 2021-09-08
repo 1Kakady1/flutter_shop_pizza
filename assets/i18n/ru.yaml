@@ -1,0 +1,11 @@
+go_product: "Смотреть все продукты" 
+home_title_top: "Эй!"
+home_title_bottom: "Давай сделаем заказ"
+cat_all: "все"
+cat_pizza: "пицца"
+cat_drinks: "напитки"
+view: "Смотреть"
+popular: "Популярное"
+menu:
+  home: "Главная"
+  products: "Продукты"

@@ -1,0 +1,11 @@
+go_product: "Go to all products"
+home_title_top: "Hey!"
+home_title_bottom: "Let’s get your order"
+cat_all: "all"
+cat_pizz: "pizza"
+cat_drinks: "drinks"
+view: "View"
+popular: "Popular"
+menu:
+  home: "Home"
+  products: "Products"
