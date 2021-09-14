@@ -16,7 +16,7 @@ class _AppDrawerState extends State<AppDrawer>
     with SingleTickerProviderStateMixin {
   static Duration duration = Duration(milliseconds: 230);
   late AnimationController _controller;
-  static const double maxSlide = 255;
+  static const double maxSlide = 270;
   static const dragRightStartVal = 60;
   static const dragLeftStartVal = maxSlide - 20;
   static bool shouldDrag = false;
@@ -83,6 +83,8 @@ class _AppDrawerState extends State<AppDrawer>
 
   @override
   Widget build(BuildContext context) {
+    final double queryDataWidth = MediaQuery.of(context).size.width;
+    final double offsetTranslate = queryDataWidth > 600 ? 100 : 0;
     return GestureDetector(
       onHorizontalDragStart: _onDragStart,
       onHorizontalDragUpdate: _onDragUpdate,
@@ -91,7 +93,7 @@ class _AppDrawerState extends State<AppDrawer>
         animation: _controller,
         builder: (BuildContext context, _) {
           double animationVal = _controller.value;
-          double translateVal = animationVal * maxSlide;
+          double translateVal = animationVal * (maxSlide + offsetTranslate);
           double scaleVal = 1 - (animationVal * 0.3);
           return Stack(
             children: <Widget>[

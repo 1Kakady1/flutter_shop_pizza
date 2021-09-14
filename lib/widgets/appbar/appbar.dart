@@ -15,6 +15,7 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final Widget? title;
   late GlobalKey<ScaffoldState> scaffold;
   final double? elevation;
+  final EdgeInsets? paddingActions;
 
   CustomAppBar(
       {Key? key,
@@ -24,6 +25,7 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
       this.leading,
       this.elevation,
       this.title,
+      this.paddingActions,
       required this.scaffold})
       : preferredSize = Size.fromHeight(60.0),
         super(key: key);
@@ -40,7 +42,12 @@ class _CustomAppBarState extends State<CustomAppBar> {
   Widget build(BuildContext context) {
     return AppBar(
       title: widget.title ?? UserTitle(),
-      actions: [...?widget.actions, UserAvatarContainer()],
+      actions: [
+        ...?widget.actions,
+        Container(
+            padding: widget.paddingActions ?? EdgeInsets.all(0),
+            child: UserAvatarContainer())
+      ],
       leading: _getButton(widget.onClick, widget.onBack, widget.scaffold),
       elevation: widget.elevation,
       centerTitle: true,

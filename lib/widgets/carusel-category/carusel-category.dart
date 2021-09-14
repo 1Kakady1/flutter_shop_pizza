@@ -26,29 +26,37 @@ class _CaruselCategoryState extends State<CaruselCategory> {
   final _controller = ScrollController();
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: widget.height,
-      padding: EdgeInsets.all(12),
-      child: ListView.separated(
-        controller: _controller,
-        scrollDirection: Axis.horizontal,
-        itemCount: widget.cat.length,
-        separatorBuilder: (context, index) =>
-            SizedBox(width: widget.separatorSize),
-        itemBuilder: (context, index) {
-          return Container(
-            child: CardCategory(
-              isActive: index == widget.activeCat,
-              onPress: () {
-                widget.onPress(widget.cat[index].name);
-              },
-              name: widget.cat[index].name,
-              preview: widget.cat[index].preview,
-              margin: EdgeInsets.only(left: 14, right: 14, bottom: 18, top: 10),
-            ),
-          );
-        },
-      ),
-    );
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+      final double mediaWidth = constraints.maxWidth;
+      return Container(
+        height: mediaWidth > 600 ? 324 : widget.height,
+        padding: EdgeInsets.all(12),
+        child: ListView.separated(
+          controller: _controller,
+          scrollDirection: Axis.horizontal,
+          itemCount: widget.cat.length,
+          separatorBuilder: (context, index) =>
+              SizedBox(width: widget.separatorSize),
+          itemBuilder: (context, index) {
+            return Container(
+              child: CardCategory(
+                mediaWidth: mediaWidth,
+                width: mediaWidth > 600 ? 210 : 95,
+                height: mediaWidth > 600 ? 324 : null,
+                isActive: index == widget.activeCat,
+                onPress: () {
+                  widget.onPress(widget.cat[index].name);
+                },
+                name: widget.cat[index].name,
+                preview: widget.cat[index].preview,
+                margin:
+                    EdgeInsets.only(left: 14, right: 14, bottom: 18, top: 10),
+              ),
+            );
+          },
+        ),
+      );
+    });
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -11,11 +13,14 @@ class CardCategory extends StatelessWidget {
   final Function onPress;
   final EdgeInsets? margin;
   final bool isActive;
+  final double? mediaWidth;
+
   CardCategory(
       {Key? key,
       this.height = 176,
-      this.width = 95,
+      this.width = 300,
       this.margin,
+      this.mediaWidth,
       required this.isActive,
       required this.onPress,
       required this.name,
@@ -25,10 +30,12 @@ class CardCategory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String catName = FlutterI18n.translate(context, "cat_$name");
+    final bool isMediaSM =
+        (mediaWidth != null) && (mediaWidth! > 600) ? true : false;
     return AnimatedContainer(
-      height: this.height,
-      width: this.width,
-      margin: this.margin,
+      height: height,
+      width: width,
+      margin: margin,
       decoration: BoxDecoration(
         color: isActive == true
             ? AppColors.red[200]
@@ -51,21 +58,18 @@ class CardCategory extends StatelessWidget {
               borderRadius: BorderRadius.circular(10.0),
               child: Image.network(
                 preview,
-                width: 50,
-                height: 50,
+                width: isMediaSM == true ? 110 : 50,
+                height: isMediaSM == true ? 110 : 50,
                 fit: BoxFit.cover,
               )),
           SizedBox(height: 25),
           AnimatedDefaultTextStyle(
             style: isActive
-                ? Theme.of(context)
-                    .textTheme
-                    .headline3!
-                    .copyWith(color: Colors.white)
-                : Theme.of(context)
-                    .textTheme
-                    .headline3!
-                    .copyWith(color: AppColors.black),
+                ? Theme.of(context).textTheme.headline3!.copyWith(
+                    color: Colors.white, fontSize: isMediaSM == true ? 22 : 16)
+                : Theme.of(context).textTheme.headline3!.copyWith(
+                    color: AppColors.black,
+                    fontSize: isMediaSM == true ? 22 : 16),
             duration: const Duration(milliseconds: 500),
             child: Text('${catName[0].toUpperCase()}${catName.substring(1)}'),
           ),
@@ -73,14 +77,14 @@ class CardCategory extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(30.0),
             child: Container(
-              width: 30,
-              height: 30,
+              width: isMediaSM == true ? 58 : 30,
+              height: isMediaSM == true ? 58 : 30,
               color: isActive == true ? Colors.white : AppColors.black,
               child: Stack(children: [
                 Positioned(
-                  width: 30,
-                  height: 30,
-                  top: -6,
+                  width: isMediaSM == true ? 58 : 30,
+                  height: isMediaSM == true ? 58 : 30,
+                  top: isMediaSM == true ? 0 : -6,
                   left: 1,
                   child: IconButton(
                     onPressed: () {

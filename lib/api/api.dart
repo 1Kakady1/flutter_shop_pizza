@@ -7,6 +7,19 @@ import 'package:pizza_time/redux/state/home/home.model.dart';
 
 enum CallectionWhere { isEqualTo, arrayContains, arrayContainsIsEqualToTop }
 
+class ApiData<T> {
+  final T data;
+  final String error;
+  final int hashCode;
+
+  ApiData({required this.data, required this.error, required this.hashCode});
+
+  @override
+  bool operator ==(Object other) {
+    return super == other;
+  }
+}
+
 class Api {
   var _collectionProducts = FirebaseFirestore.instance.collection('products');
   var _collectionCategories = FirebaseFirestore.instance.collection('cat');
@@ -98,7 +111,7 @@ class Api {
     }
   }
 
-  Future<HomeReduserModelSetHome> getHome(
+  Future<ApiData<HomeReduserModelSetHome?>> getHome(
       {int limit = 10,
       String? field,
       CallectionWhere? where,
@@ -106,11 +119,44 @@ class Api {
     try {
       List<Product> products = await getProducts(
           limit: limit, where: where, field: field, value: value);
-      //List<Category> cat = await getCategoryes();
-      return HomeReduserModelSetHome(cat: [], products: products);
+      List<Category> cat = await getCategoryes();
+      return ApiData<HomeReduserModelSetHome>(
+          data: HomeReduserModelSetHome(cat: cat, products: products),
+          error: "",
+          hashCode: products.hashCode);
+    } catch (e) {
+      return ApiData(
+          data: null, error: "Error ${e.toString()}", hashCode: e.hashCode);
+    }
+  }
+
+  Future<ApiData<List<Product>>> getProductsRequest(
+      {int limit = 10,
+      String? field,
+      CallectionWhere? where,
+      dynamic value}) async {
+    try {
+      var request;
+      if (field != null && where != null && value != null) {
+        request = await this
+            ._apiWhere(_collectionProducts, field, where, value, limit: limit);
+      } else {
+        request = await this._collectionProducts.limit(limit).get();
+      }
+
+      var docs = request.docs;
+      List<Product> data = [];
+      docs.forEach((element) {
+        var doc = element.data();
+        doc['id'] = element.id;
+        data.add(Product.fromJson(doc));
+      });
+      return ApiData<List<Product>>(
+          data: data, error: "", hashCode: data.hashCode);
     } catch (e) {
       log("products error: ${e.toString()} ${e.hashCode}");
-      return throw (e.toString());
+      return ApiData<List<Product>>(
+          data: [], error: e.toString(), hashCode: e.hashCode);
     }
   }
 }

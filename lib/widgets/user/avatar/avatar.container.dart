@@ -9,20 +9,24 @@ import 'package:redux/redux.dart';
 class UserAvatarContainer extends StatelessWidget {
   final bool? isBorder;
   final double? size;
+
   const UserAvatarContainer({Key? key, this.isBorder, this.size})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final double queryData = MediaQuery.of(context).size.width;
+    final double sizeAvatar = queryData > 600 ? 40 : 20;
     return Container(
         child: StoreConnector<AppState, _ViewUserAvatar>(
+            distinct: true,
             converter: (store) => _ViewUserAvatar.fromStore(store),
             builder: (context, vm) {
               return UserAvatar(
+                size: size != null ? size : sizeAvatar,
                 isAuth: vm.isAuth,
                 user: vm.user,
                 isBorder: isBorder,
-                size: size,
               );
             }));
   }
@@ -31,8 +35,19 @@ class UserAvatarContainer extends StatelessWidget {
 class _ViewUserAvatar {
   final bool isAuth;
   final User user;
-
   _ViewUserAvatar({required this.isAuth, required this.user});
+
+  @override
+  bool operator ==(other) {
+    return (other is _ViewUserAvatar) &&
+        (this.user == other.user) &&
+        (this.isAuth == other.isAuth);
+  }
+
+  @override
+  int get hashCode {
+    return isAuth.hashCode + user.hashCode;
+  }
 
   static _ViewUserAvatar fromStore(Store<AppState> store) {
     return _ViewUserAvatar(

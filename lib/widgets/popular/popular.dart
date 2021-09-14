@@ -4,24 +4,30 @@ import 'package:pizza_time/model/product.model.dart';
 import 'package:pizza_time/styles/colors.dart';
 import 'package:pizza_time/widgets/card/card_product/card_product.dart';
 import 'package:pizza_time/widgets/card/card_product/card_product.skeleton.dart';
+import 'package:pizza_time/widgets/popular/popular.container.dart';
 
 class PopularList extends StatelessWidget {
   final bool isLoad;
   final List<Product> products;
   final String cat;
   final double? constraintsMaxWidth;
-
+  final GotoProducts gotoProducts;
   const PopularList(
       {Key? key,
       required this.products,
       required this.isLoad,
       required this.cat,
+      required this.gotoProducts,
       this.constraintsMaxWidth})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final String catName = FlutterI18n.translate(context, "cat_$cat");
+    final bool isMediaSM =
+        constraintsMaxWidth != null && constraintsMaxWidth! > 600
+            ? true
+            : false;
     return Container(
       child: Column(
         children: [
@@ -30,17 +36,21 @@ class PopularList extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(FlutterI18n.translate(context, "popular"),
-                  style: Theme.of(context).textTheme.headline2),
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline2!
+                      .copyWith(fontSize: isMediaSM == true ? 26 : 18)),
               GestureDetector(
                 onTap: () {
-                  print("go to");
+                  gotoProducts(cat, context);
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                       "${FlutterI18n.translate(context, "view")} $catName >",
-                      style:
-                          TextStyle(color: AppColors.red[200], fontSize: 12)),
+                      style: TextStyle(
+                          color: AppColors.red[200],
+                          fontSize: isMediaSM == true ? 22 : 12)),
                 ),
               )
             ],

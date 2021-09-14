@@ -49,6 +49,7 @@ dependencies:
   rxdart: ^0.26.0
   skeleton_text: ^3.0.0
   flutter_animator: ^3.1.2
+  marquee: ^2.2.0
 
 dev_dependencies:
   flutter_test:

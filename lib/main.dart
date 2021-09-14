@@ -5,13 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:pizza_time/page/home.dart';
-import 'package:pizza_time/page/products.dart';
+import 'package:pizza_time/redux/state/home/home.actions.dart';
 import 'package:pizza_time/redux/store.dart';
+import 'package:pizza_time/routes/routes.dart';
 import 'package:pizza_time/styles/theme.dart';
-import 'package:pizza_time/widgets/drawer/drawer.dart';
 import 'package:theme_provider/theme_provider.dart';
-
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -32,7 +30,7 @@ void main() async {
         basePath: 'assets/i18n',
         forcedLocale: Locale('ru')),
   );
-
+  storeApp.dispatch(RequestHome(isLoad: true, error: ""));
   runApp(StoreProvider(
     child: MyApp(flutterI18nDelegate),
     store: storeApp,
@@ -73,12 +71,7 @@ class MyApp extends StatelessWidget {
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate
             ],
-            routes: {
-              '/': (context) => AppDrawer(
-                    child: HomePage(),
-                  ),
-              '/products': (context) => AppDrawer(child: ProductsPage()),
-            },
+            routes: AppRoutes().getRoutersMap(false),
           ),
         ),
       ),

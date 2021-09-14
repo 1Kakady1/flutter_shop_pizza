@@ -10,6 +10,7 @@ import 'package:pizza_time/styles/colors.dart';
 // import 'package:redux/redux.dart';
 
 class UserTitle extends StatelessWidget {
+  const UserTitle({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     //final Store<AppState> store = StoreProvider.of<AppState>(context);
@@ -21,6 +22,7 @@ class UserTitle extends StatelessWidget {
 }
 
 Widget _titleAuth(User info, BuildContext context) {
+  final double queryData = MediaQuery.of(context).size.width;
   return Container(
     child: Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -36,21 +38,21 @@ Widget _titleAuth(User info, BuildContext context) {
             textDirection: TextDirection.ltr,
             text: TextSpan(
               text: info.address,
-              style: TextStyle(fontSize: 20),
+              style: TextStyle(fontSize: queryData > 600 ? 30 : 20),
               children: [
                 TextSpan(
                   text: "Chicago,",
                   style: Theme.of(context)
                       .textTheme
                       .subtitle1!
-                      .copyWith(fontSize: 16.0),
+                      .copyWith(fontSize: queryData > 600 ? 26 : 16.0),
                 ),
                 TextSpan(
                   text: "EN",
                   style: Theme.of(context)
                       .textTheme
                       .subtitle2!
-                      .copyWith(fontSize: 16.0),
+                      .copyWith(fontSize: queryData > 600 ? 26 : 16.0),
                 ),
               ],
             )),

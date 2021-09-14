@@ -16,6 +16,7 @@ class DraverUserInfoContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         child: StoreConnector<AppState, _ViewDraverUserInfo>(
+            distinct: true,
             converter: (store) => _ViewDraverUserInfo.fromStore(store),
             builder: (context, vm) {
               return DraverUserInfo(
@@ -33,6 +34,17 @@ class _ViewDraverUserInfo {
   final User user;
 
   _ViewDraverUserInfo({required this.isAuth, required this.user});
+  @override
+  bool operator ==(other) {
+    return (other is _ViewDraverUserInfo) &&
+        (this.user == other.user) &&
+        (this.isAuth == other.isAuth);
+  }
+
+  @override
+  int get hashCode {
+    return isAuth.hashCode + user.hashCode;
+  }
 
   static _ViewDraverUserInfo fromStore(Store<AppState> store) {
     return _ViewDraverUserInfo(

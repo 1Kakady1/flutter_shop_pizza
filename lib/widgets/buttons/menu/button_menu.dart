@@ -5,11 +5,20 @@ typedef Press = void Function();
 
 class ButtonMenu extends StatelessWidget {
   final Press onOpen;
-  ButtonMenu({required this.onOpen});
+  final double? iconSize;
+  ButtonMenu({required this.onOpen, this.iconSize = 24.0});
   @override
   Widget build(BuildContext context) {
+    final double queryData = MediaQuery.of(context).size.width;
+    final double size = queryData > 600 ? iconSize! + 20.0 : iconSize!;
     return IconButton(
-      icon: SvgPicture.asset("assets/svg/menu.svg", semanticsLabel: 'menu'),
+      iconSize: size,
+      icon: SvgPicture.asset(
+        "assets/svg/menu.svg",
+        semanticsLabel: 'menu',
+        width: size,
+        height: size,
+      ),
       onPressed: onOpen,
     );
   }

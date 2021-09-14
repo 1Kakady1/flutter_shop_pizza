@@ -19,6 +19,12 @@ class ChangeCategorysAction {
   ChangeCategorysAction({required this.currentCat});
 }
 
+//!TODO: найти способ убрать повторение
+class ChangeCategorysSliverAction {
+  final String currentCat;
+  ChangeCategorysSliverAction({required this.currentCat});
+}
+
 ThunkAction getCategorys = (Store store) async {
   _api
       .getCategoryes()

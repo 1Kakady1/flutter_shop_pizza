@@ -13,7 +13,7 @@ class HomeSelectors {
     (HomeModelState home) => home.isLoad,
   );
 
-  static final cat = createSelector1(
+  static final categorys = createSelector1(
     AppSelectors.homeSelector,
     (HomeModelState home) => home.cat,
   );
@@ -23,7 +23,23 @@ class HomeSelectors {
     (HomeModelState home) => home.error,
   );
 
-  static final toProducts = createSelector1(
+  static final currentCat = createSelector1(
+    AppSelectors.homeSelector,
+    (HomeModelState home) => home.currentCat,
+  );
+
+  static final catIndex = (String name) => createSelector1(
+        AppSelectors.homeSelector,
+        (HomeModelState home) => home.cat.indexWhere(
+            (element) => element.name.toLowerCase() == name.toLowerCase()),
+      );
+  static final catIndexByID = (String id) => createSelector1(
+        AppSelectors.homeSelector,
+        (HomeModelState home) => home.cat.indexWhere(
+            (element) => element.catId.toLowerCase() == id.toLowerCase()),
+      );
+
+  static final toHome = createSelector1(
     AppSelectors.homeSelector,
     (HomeModelState home) => home,
   );

@@ -6,6 +6,36 @@ import 'package:redux_thunk/redux_thunk.dart';
 
 Api _api = Api();
 
+class RequestProductsAction {
+  bool isLoad;
+  String error;
+
+  RequestProductsAction({required this.error, required this.isLoad});
+}
+
+class RequestProductsSuccessAction {
+  List<Product> products;
+  bool isLoad;
+  String error;
+
+  RequestProductsSuccessAction(
+      {required this.products, required this.error, required this.isLoad});
+}
+
+class RequestProductsErrorAction {
+  bool isLoad;
+  String error;
+
+  RequestProductsErrorAction({required this.error, required this.isLoad});
+}
+
+class GotoCategoryProducts {
+  final String? cat;
+  bool isLoad;
+  String error;
+  GotoCategoryProducts({this.cat, required this.isLoad, required this.error});
+}
+
 class SetProductsAction {
   List<Product> products;
   bool isLoad;
@@ -14,26 +44,6 @@ class SetProductsAction {
   SetProductsAction(
       {required this.products, required this.error, required this.isLoad});
 }
-
-// class GetProducts {
-//   final int limit;
-//   final String? field;
-//   final dynamic value;
-//   final CallectionWhere? where;
-
-//   GetProducts({this.field, this.where, this.limit = 3, this.value});
-
-//   ThunkAction<AppState> getProducts = (Store<AppState> store) async {
-//     final a = field;
-//     _api
-//         .getProducts(limit: limit, where: where, field: field, value: value)
-//         .then((value) {
-//       return store.dispatch(
-//           SetProductsAction(products: value, error: "", isLoad: false));
-//     }).catchError((e) => store.dispatch(SetProductsAction(
-//             products: [], error: e.toString(), isLoad: false)));
-//   };
-// }
 
 ThunkAction<AppState> getProducts(
     {int limit = 10, String? field, CallectionWhere? where, dynamic value}) {
