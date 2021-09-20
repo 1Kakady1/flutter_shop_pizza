@@ -32,7 +32,15 @@ class ProductSliverContainer extends StatelessWidget {
                   (BuildContext context, int index) {
                     return Padding(
                       padding: const EdgeInsets.all(10.0),
-                      child: CardProductSmall(product: vm.product[index]),
+                      child: CardProductSmall(
+                          product: vm.product[index],
+                          onPress: () => {
+                                Navigator.pushNamed(context, "/product",
+                                    arguments: {
+                                      "id": vm.product[index].id,
+                                      "product": vm.product[index]
+                                    })
+                              }),
                     );
                   },
                   childCount: vm.product.length,

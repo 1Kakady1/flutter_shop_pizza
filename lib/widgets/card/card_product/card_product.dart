@@ -5,9 +5,13 @@ import 'package:pizza_time/model/product.model.dart';
 import 'package:pizza_time/styles/colors.dart';
 import 'package:pizza_time/widgets/bookmark/bookmark.dart';
 
+typedef OnTapType = void Function();
+
 class CardProduct extends StatelessWidget {
   final Product product;
-  CardProduct({Key? key, required this.product}) : super(key: key);
+  final OnTapType onTap;
+  CardProduct({Key? key, required this.product, required this.onTap})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +124,7 @@ class CardProduct extends StatelessWidget {
                 color: Colors.transparent,
                 child: new InkWell(
                   borderRadius: BorderRadius.circular(10.0),
-                  onTap: () => null,
+                  onTap: () => onTap(),
                 )))
       ]),
     );

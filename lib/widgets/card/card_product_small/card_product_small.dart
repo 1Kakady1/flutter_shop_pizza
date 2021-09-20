@@ -5,11 +5,13 @@ import 'package:pizza_time/helpers/product.utils.dart';
 import 'package:pizza_time/model/product.model.dart';
 import 'package:pizza_time/styles/colors.dart';
 import 'package:pizza_time/widgets/bookmark/bookmark.dart';
-import "dart:math" show pi;
+import 'package:pizza_time/widgets/card/card_product_small/card_product_small.media.dart';
 
 class CardProductSmall extends StatelessWidget {
   final Product product;
-  CardProductSmall({Key? key, required this.product}) : super(key: key);
+  final Function onPress;
+  CardProductSmall({Key? key, required this.product, required this.onPress})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +22,17 @@ class CardProductSmall extends StatelessWidget {
     final String unit =
         product.isUnit == true && size != null ? "($size ${product.unit})" : "";
     final List<String> categorys = product.cat;
+
+    final double mediaWidth =
+        MediaQuery.of(context).size.width >= 600 ? 600 : 0;
+    final Map<int, Map<String, dynamic>> mapMedia =
+        CardProductSmallMedia.mapMedia(mediaWidth);
+    final TextStyle titileStyle = TextStyle(
+        fontSize: mapMedia[mediaWidth]!["title_font_size"],
+        fontWeight: FontWeight.bold);
+
     return Container(
-      height: 140,
+      height: mapMedia[mediaWidth]!["container_height"],
       decoration: BoxDecoration(
         color: Theme.of(context).backgroundColor,
         borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -42,102 +53,117 @@ class CardProductSmall extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10.0),
                 child: Image.network(
                   product.preview,
-                  width: 140,
-                  height: 140,
+                  width: mapMedia[mediaWidth]!["size_img"],
+                  height: mapMedia[mediaWidth]!["size_img"],
                   fit: BoxFit.cover,
                   errorBuilder: (BuildContext context, Object exception,
                       StackTrace? stackTrace) {
                     return Image.asset(
                       "assets/img/no-img.png",
-                      width: 140,
-                      height: 140,
+                      width: mapMedia[mediaWidth]!["size_img"],
+                      height: mapMedia[mediaWidth]!["size_img"],
                       fit: BoxFit.cover,
                     );
                   },
                 )),
-            Padding(
-              padding: EdgeInsets.all(10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                          width: 110,
-                          height: 40,
-                          child: Marquee(
-                            accelerationCurve: Curves.easeInCirc,
-                            blankSpace: 60.0,
-                            pauseAfterRound: Duration(seconds: 6),
-                            text: product.title,
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
-                          )),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          FaIcon(
-                            FontAwesomeIcons.clipboardList,
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          ..._printCategory(categorys, 3)
-                        ],
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          FaIcon(
-                            FontAwesomeIcons.rulerCombined,
-                          ),
-                          SizedBox(
-                            width: 8,
-                          ),
-                          ..._printSizes(sizes, 3)
-                        ],
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Container(
-                    width: 80,
-                    height: 140,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+            SizedBox(
+              width: mediaWidth >= 600 ? 30 : 0,
+            ),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.all(mediaWidth >= 600 ? 24.00 : 10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "\$ $price",
-                          style: Theme.of(context)
-                              .textTheme
-                              .subtitle1!
-                              .copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.red[200],
-                                  fontSize: 20),
+                        Container(
+                            width: mapMedia[mediaWidth]!["title_width"],
+                            height: 40,
+                            child: mediaWidth < 600
+                                ? Marquee(
+                                    accelerationCurve: Curves.easeInCirc,
+                                    blankSpace: 60.0,
+                                    pauseAfterRound: Duration(seconds: 6),
+                                    text: product.title,
+                                    style: titileStyle,
+                                  )
+                                : Text(
+                                    product.title,
+                                    style: titileStyle,
+                                  )),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            FaIcon(
+                              FontAwesomeIcons.clipboardList,
+                              size: mediaWidth >= 600 ? 38 : 18,
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            ..._printCategory(categorys, 3, mediaWidth)
+                          ],
                         ),
-                        Text(
-                          "$unit",
-                          style: Theme.of(context)
-                              .textTheme
-                              .subtitle1!
-                              .copyWith(
-                                  fontWeight: FontWeight.w600, fontSize: 10),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            FaIcon(
+                              FontAwesomeIcons.rulerCombined,
+                              size: mediaWidth >= 600 ? 38 : 18,
+                            ),
+                            SizedBox(
+                              width: 8,
+                            ),
+                            ..._printSizes(sizes, 3, mediaWidth)
+                          ],
                         )
                       ],
                     ),
-                  ),
-                ],
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Container(
+                      width: mapMedia[mediaWidth]!["price"]["contianer"]
+                          ["width"],
+                      height: mapMedia[mediaWidth]!["container_height"],
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            "\$ $price",
+                            style: Theme.of(context)
+                                .textTheme
+                                .subtitle1!
+                                .copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.red[200],
+                                    fontSize: mapMedia[mediaWidth]!["price"]
+                                        ["size"]),
+                          ),
+                          Text(
+                            "$unit",
+                            style: Theme.of(context)
+                                .textTheme
+                                .subtitle1!
+                                .copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: mapMedia[mediaWidth]!["price"]
+                                        ["size_unit"]),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             )
           ],
@@ -147,18 +173,18 @@ class CardProductSmall extends StatelessWidget {
                 color: Colors.transparent,
                 child: new InkWell(
                   borderRadius: BorderRadius.circular(10.0),
-                  onTap: () => null,
+                  onTap: () => onPress(),
                 ))),
         product.isTop == true
             ? Positioned(
-                right: 26,
+                right: mapMedia[mediaWidth]!["bookmark"]["right"],
                 top: -10,
                 child: Bookmark(
                   text: "TOP",
-                  top: 18,
-                  width: 40,
-                  heigt: 60,
-                  fontSize: 10,
+                  top: mapMedia[mediaWidth]!["bookmark"]["top"],
+                  width: mapMedia[mediaWidth]!["bookmark"]["width"],
+                  heigt: mapMedia[mediaWidth]!["bookmark"]["height"],
+                  fontSize: mapMedia[mediaWidth]!["bookmark"]["size"],
                 ))
             : SizedBox()
       ]),
@@ -166,8 +192,9 @@ class CardProductSmall extends StatelessWidget {
   }
 }
 
-List<Widget> _printSizes(List<String?>? size, int count) {
+List<Widget> _printSizes(List<String?>? size, int count, double media) {
   final List<Widget> sizeList = [];
+
   if (size != null) {
     for (int i = 0; i < size.length; i++) {
       if (i == count && count != size.length) {
@@ -181,7 +208,8 @@ List<Widget> _printSizes(List<String?>? size, int count) {
         padding: const EdgeInsets.only(right: 8.0),
         child: Text(
           size[i]!,
-          style: TextStyle(fontWeight: FontWeight.w600),
+          style: TextStyle(
+              fontWeight: FontWeight.w600, fontSize: media >= 600 ? 30 : 12),
         ),
       ));
     }
@@ -190,13 +218,15 @@ List<Widget> _printSizes(List<String?>? size, int count) {
   return sizeList;
 }
 
-List<Widget> _printCategory(List<String> category, int count) {
+List<Widget> _printCategory(List<String> category, int count, double media) {
   final List<Widget> catList = [];
   for (int i = 0; i < category.length; i++) {
     if (i == count && count != category.length) {
       catList.add(const Text(
         "...",
-        style: TextStyle(fontWeight: FontWeight.w600),
+        style: TextStyle(
+          fontWeight: FontWeight.w600,
+        ),
       ));
       break;
     }
@@ -204,7 +234,8 @@ List<Widget> _printCategory(List<String> category, int count) {
       padding: const EdgeInsets.only(right: 8.0),
       child: Text(
         category[i],
-        style: TextStyle(fontWeight: FontWeight.w600),
+        style: TextStyle(
+            fontWeight: FontWeight.w600, fontSize: media >= 600 ? 30 : 12),
       ),
     ));
   }

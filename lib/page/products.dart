@@ -28,7 +28,9 @@ class _ProductsPageState extends State<ProductsPage> {
             SliverAppBar(
               automaticallyImplyLeading: false,
               titleSpacing: 0,
-              title: AppbarProduct(),
+              title: AppbarProduct(
+                onToggle: () => 0,
+              ),
               backgroundColor: AppColors.red[300],
               pinned: true,
               floating: true,

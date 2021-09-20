@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pizza_time/model/category.model.dart';
 import 'package:pizza_time/model/product.model.dart';
 import 'package:pizza_time/redux/state/home/home.model.dart';
+import 'package:pizza_time/redux/state/product/product.model.dart';
 
 enum CallectionWhere { isEqualTo, arrayContains, arrayContainsIsEqualToTop }
 
@@ -42,15 +43,16 @@ class Api {
     }
   }
 
-  Future<Product> getProductById(String id) async {
+  Future<ApiData<Product?>> getProductById(String id) async {
     try {
       var request = await this._collectionProducts.doc(id).get();
       var map = request.data();
       map!["id"] = request.id;
       Product data = Product.fromJson(map);
-      return data;
+      return ApiData<Product>(data: data, error: "", hashCode: data.hashCode);
     } catch (e) {
-      return throw (e.toString());
+      return ApiData(
+          data: null, error: "Error ${e.toString()}", hashCode: e.hashCode);
     }
   }
 

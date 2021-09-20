@@ -98,4 +98,38 @@ class Product {
     }
     return data;
   }
+
+  Product copyWith({
+    id,
+    cat,
+    code,
+    desc,
+    name,
+    preview,
+    title,
+    url,
+    price,
+    isUnit,
+    isTop,
+    filter,
+    unit,
+    gallary,
+  }) {
+    return Product(
+      id: id ?? this.id,
+      cat: cat ?? this.cat,
+      code: code ?? this.code,
+      desc: desc ?? this.desc,
+      name: name ?? this.name,
+      preview: preview ?? this.preview,
+      title: title ?? this.title,
+      url: url ?? this.url,
+      price: price ?? this.price,
+      isUnit: isUnit ?? this.isUnit,
+      isTop: isTop ?? this.isTop,
+      filter: filter ?? this.filter,
+      unit: unit ?? this.unit,
+      gallary: gallary ?? this.gallary,
+    );
+  }
 }

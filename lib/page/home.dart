@@ -9,6 +9,7 @@ import 'package:pizza_time/styles/colors.dart';
 import 'package:pizza_time/widgets/appbar/appbar.dart';
 import 'package:pizza_time/widgets/carusel-category/carusel-category.home.container.dart';
 import 'package:pizza_time/widgets/popular/popular.container.dart';
+import 'package:pizza_time/widgets/user/title/user_title.dart';
 import 'package:redux/redux.dart';
 
 class HomePage extends StatefulWidget {
@@ -33,6 +34,8 @@ class _HomePageState extends State<HomePage> {
       key: _scaffoldKey,
       appBar: CustomAppBar(
         scaffold: _scaffoldKey,
+        title: UserTitle(),
+        color: AppColors.background,
         elevation: 0,
         onClick: () => 0,
       ),

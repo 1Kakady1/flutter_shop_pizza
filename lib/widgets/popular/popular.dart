@@ -57,7 +57,9 @@ class PopularList extends StatelessWidget {
           ),
           SizedBox(height: 18),
           Wrap(
-            children: [..._listPopular(products, isLoad, constraintsMaxWidth)],
+            children: [
+              ..._listPopular(products, isLoad, context, constraintsMaxWidth)
+            ],
           )
         ],
       ),
@@ -65,8 +67,8 @@ class PopularList extends StatelessWidget {
   }
 }
 
-List<Widget> _listPopular(
-    List<Product> product, bool isLoad, double? constraintsMaxWidth) {
+List<Widget> _listPopular(List<Product> product, bool isLoad,
+    BuildContext context, double? constraintsMaxWidth) {
   if (isLoad == true) {
     return [CardProductSkeleton()];
   }
@@ -81,6 +83,8 @@ List<Widget> _listPopular(
       margin: EdgeInsets.only(bottom: 16, left: marginLeft, right: marginRight),
       child: CardProduct(
         product: product[i],
+        onTap: () => Navigator.pushNamed(context, "/product",
+            arguments: {"id": product[i].id, "product": product[i]}),
       ),
     ));
   }

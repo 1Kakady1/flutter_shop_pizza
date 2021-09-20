@@ -8,6 +8,11 @@ class ProductsSelectors {
     (Products products) => products.products,
   );
 
+  static final productIndexByID = (String id) => createSelector1(
+      AppSelectors.productsSelector,
+      (Products products) =>
+          products.products.indexWhere((element) => element.id == id));
+
   static final isLoad = createSelector1(
     AppSelectors.productsSelector,
     (Products products) => products.isLoad,

@@ -9,9 +9,11 @@ popular: "Popular"
 menu:
   home: "Home"
   products: "Products"
+  cart: "Cart"
 user:
   acc_not_title: "Don't have an account yet?"
   acc_not_sub: "Start it up quickly!"
 login:
   sign_in: "Sign In"
   sign_out: "Sign Out"
+price_label: "Price"

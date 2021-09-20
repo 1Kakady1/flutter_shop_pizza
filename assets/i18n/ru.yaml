@@ -9,9 +9,11 @@ popular: "Популярное"
 menu:
   home: "Главная"
   products: "Продукты"
+  cart: "Корзина"
 user:
   acc_not_title: "Еще нет аккаунта?"
   acc_not_sub: "Быстрей заводи его!"
 login:
   sign_in: "Войти"
   sign_out: "Выйти"
+price_label: "Цена"
