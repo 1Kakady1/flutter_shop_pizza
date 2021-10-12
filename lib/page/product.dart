@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:pizza_time/model/cart.model.dart';
 import 'package:pizza_time/model/product.model.dart';
 import 'package:pizza_time/model/product_filter.model.dart';
@@ -16,6 +19,8 @@ import 'package:pizza_time/widgets/bookmark/bookmark.dart';
 import 'package:pizza_time/widgets/buttons/cart/button_cart.container.dart';
 import 'package:pizza_time/widgets/buttons/default/button_default.dart';
 import 'package:pizza_time/widgets/counter/counter.dart';
+import 'package:pizza_time/widgets/gallery/gallery.dart';
+import 'package:pizza_time/widgets/gallery/gallery.model.dart';
 import 'package:pizza_time/widgets/product_panel/product_panel.dart';
 import 'package:redux/redux.dart';
 
@@ -54,10 +59,14 @@ class _ProductPageState extends State<ProductPage> {
                         arguments["product"] as Product?);
                     final index = vm.cartPrductIndex;
                     final int count = index == -1 ? 0 : vm.cart[index].count;
+                    final List<GalleryItem> gallery =
+                        _buildGalleryItems(vm.product?.gallary);
+
                     return _content(
                         isLoad: vm.isLoad,
                         product: item,
                         error: vm.error,
+                        context: context,
                         child: SingleChildScrollView(
                           physics: AlwaysScrollableScrollPhysics(),
                           child: Column(
@@ -203,13 +212,45 @@ class _ProductPageState extends State<ProductPage> {
                               ),
                               SizedBox(
                                 height: 20,
-                              )
+                              ),
+                              vm.product?.gallary != null
+                                  ? Column(
+                                      children: [
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        Text(
+                                          FlutterI18n.translate(
+                                              context, "title.gallery"),
+                                        ),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        Container(
+                                            child: Gallery(
+                                          gallery: gallery,
+                                        )),
+                                      ],
+                                    )
+                                  : SizedBox()
                             ],
                           ),
                         ));
                   }))),
       bottomNavigationBar: ProductPanel(),
     );
+  }
+
+  List<GalleryItem> _buildGalleryItems(List<String?>? gallery) {
+    List<GalleryItem> list = [];
+    if (gallery != null) {
+      for (int i = 0; i < gallery.length; i++) {
+        list.add(
+            GalleryItem(id: "tag-" + i.toString(), resource: gallery[i] ?? ""));
+      }
+    }
+
+    return list;
   }
 
   void _onAdd(Product? product, String size, int count) {
@@ -285,24 +326,63 @@ Widget _sizeButton(ProductFilter? filter, Store<AppState> store,
   );
 }
 
+Widget _containerFull(List<Widget> wd, BuildContext ctx) {
+  return Container(
+    height: MediaQuery.of(ctx).size.height - 130,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: wd,
+    ),
+  );
+}
+
 Widget _content(
     {required Widget child,
     required Product? product,
     required bool isLoad,
-    required String error}) {
-  if (product != null && isLoad == true) {
+    required String error,
+    required BuildContext context}) {
+  if (error != "") {
+    return _containerFull([
+      Center(
+          child: Image.asset(
+        "assets/img/error.png",
+        width: 325,
+        height: 161,
+      )),
+      Center(
+        child: Text("Error: $error"),
+      ),
+    ], context);
+  }
+
+  if (product != null && isLoad == false) {
     return child;
   }
 
-  if (product == null) {
-    return Text("load prod update");
+  if (isLoad == true) {
+    return _containerFull([
+      Center(
+        child: new CircularProgressIndicator(
+          color: AppColors.red[200],
+        ),
+      ),
+    ], context);
   }
 
-  if (error != "") {
-    return Text("error");
-  }
-
-  return child;
+  return _containerFull([
+    Center(
+        child: Image.asset(
+      "assets/img/error-404.png",
+      width: 325,
+      height: 161,
+    )),
+    Center(
+      child: Text(FlutterI18n.translate(context, "not_found")),
+    ),
+  ], context);
+  ;
 }
 
 Product? _getProduct(

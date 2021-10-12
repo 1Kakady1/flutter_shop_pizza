@@ -10,6 +10,7 @@ class CartItem {
   final String? cat;
   final String? comments;
   final String productSize;
+  final bool? isUnit;
 
   CartItem(
       {required this.title,
@@ -20,7 +21,13 @@ class CartItem {
       this.price,
       this.cat,
       this.comments,
+      this.isUnit,
       required this.productSize});
+
+  @override
+  String toString() {
+    return 'CartItem: {name: ${title}, age: ${price}}';
+  }
 
   CartItem copyWith({
     title,
@@ -32,18 +39,19 @@ class CartItem {
     cat,
     comments,
     productSize,
+    isUnit,
   }) {
     return CartItem(
-      title: title ?? this.title,
-      preview: preview ?? this.preview,
-      id: id ?? this.id,
-      count: count ?? this.count,
-      filter: filter ?? this.filter,
-      price: price ?? this.price,
-      cat: cat ?? this.cat,
-      comments: comments ?? this.comments,
-      productSize: productSize ?? this.productSize,
-    );
+        title: title ?? this.title,
+        preview: preview ?? this.preview,
+        id: id ?? this.id,
+        count: count ?? this.count,
+        filter: filter ?? this.filter,
+        price: price ?? this.price,
+        cat: cat ?? this.cat,
+        comments: comments ?? this.comments,
+        productSize: productSize ?? this.productSize,
+        isUnit: isUnit ?? this.isUnit);
   }
 }
 

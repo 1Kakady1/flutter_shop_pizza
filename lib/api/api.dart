@@ -1,8 +1,10 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pizza_time/model/category.model.dart';
 import 'package:pizza_time/model/product.model.dart';
+import 'package:pizza_time/model/user.dart';
 import 'package:pizza_time/redux/state/home/home.model.dart';
 import 'package:pizza_time/redux/state/product/product.model.dart';
 
@@ -24,6 +26,7 @@ class ApiData<T> {
 class Api {
   var _collectionProducts = FirebaseFirestore.instance.collection('products');
   var _collectionCategories = FirebaseFirestore.instance.collection('cat');
+  var _auth = FirebaseAuth.instance;
   _apiWhere(CollectionReference<Map<String, dynamic>> collection, String field,
       CallectionWhere type, dynamic value,
       {int limit = 10}) async {
@@ -50,6 +53,31 @@ class Api {
       map!["id"] = request.id;
       Product data = Product.fromJson(map);
       return ApiData<Product>(data: data, error: "", hashCode: data.hashCode);
+    } catch (e) {
+      return ApiData(
+          data: null, error: "Error ${e.toString()}", hashCode: e.hashCode);
+    }
+  }
+
+  Future<ApiData<UserCustom?>> signInWithEmailAndPassword(
+      String email, String password) async {
+    try {
+      final User user = (await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      ))
+          .user!;
+      //TODO add get user in table users
+
+      return ApiData<UserCustom>(
+          data: UserCustom(
+              address: "",
+              email: user.email ?? "",
+              name: "",
+              preview: "",
+              id: user.uid),
+          error: "",
+          hashCode: user.hashCode);
     } catch (e) {
       return ApiData(
           data: null, error: "Error ${e.toString()}", hashCode: e.hashCode);

@@ -17,3 +17,9 @@ login:
   sign_in: "Войти"
   sign_out: "Выйти"
 price_label: "Цена"
+not_found: "Не найдены продукты"
+title:
+  gallery: "Как же аппетитно выглядит"
+  cart_empty: "Ваша корзина пуста! Это нужно срочно исправить."
+button:
+  go_product: "перейти к продуктам"

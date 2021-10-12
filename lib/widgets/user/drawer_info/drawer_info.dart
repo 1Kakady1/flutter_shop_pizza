@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:pizza_time/model/user.dart';
-import 'package:pizza_time/widgets/user/avatar/avatar.container.dart';
 import 'package:pizza_time/widgets/user/avatar/avatar.dart';
 
 class DraverUserInfo extends StatelessWidget {
   final bool isAuth;
-  final User user;
+  final UserCustom user;
   final bool? isBorder;
   final double? size;
   const DraverUserInfo(

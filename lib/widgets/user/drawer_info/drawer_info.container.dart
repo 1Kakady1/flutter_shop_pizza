@@ -31,7 +31,7 @@ class DraverUserInfoContainer extends StatelessWidget {
 
 class _ViewDraverUserInfo {
   final bool isAuth;
-  final User user;
+  final UserCustom user;
 
   _ViewDraverUserInfo({required this.isAuth, required this.user});
   @override

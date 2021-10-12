@@ -5,7 +5,7 @@ import 'package:pizza_time/styles/colors.dart';
 
 class UserAvatar extends StatelessWidget {
   final bool isAuth;
-  final User user;
+  final UserCustom user;
   final bool? isBorder;
   final double? size;
   UserAvatar(
@@ -32,7 +32,7 @@ class UserAvatar extends StatelessWidget {
   }
 }
 
-String _getAvatarName(bool isAuth, User info) {
+String _getAvatarName(bool isAuth, UserCustom info) {
   if (isAuth == false) {
     return "";
   }
@@ -40,7 +40,8 @@ String _getAvatarName(bool isAuth, User info) {
   return nameSplit[0] + nameSplit[1];
 }
 
-ImageProvider<Object> _getAvatar(bool isAuth, User info, BuildContext context) {
+ImageProvider<Object> _getAvatar(
+    bool isAuth, UserCustom info, BuildContext context) {
   final isImageUser = info.preview != null && info.preview != "" ? true : false;
   final ImageProvider? preview = isAuth == true
       ? isImageUser == true

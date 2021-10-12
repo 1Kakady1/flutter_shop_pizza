@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:pizza_time/model/cart.model.dart';
 
 enum CountType {
@@ -29,12 +31,13 @@ int getCounter(List<CartItem> cart, CountType count) {
 
 double getTotalPrice(List<CartItem> cart) {
   double totalPrice = 0;
-  cart.forEach((item) => {
-        if (item.price is int || item.price is double)
-          {totalPrice += item.price * item.count}
-        else
-          {totalPrice += item.price[item.productSize] * item.count}
-      });
+  for (int i = 0; i < cart.length; i++) {
+    if (cart[i].price is int || cart[i].price is double) {
+      totalPrice += cart[i].price * cart[i].count;
+    } else {
+      totalPrice += cart[i].price[cart[i].productSize] * cart[i].count;
+    }
+  }
 
   return totalPrice;
 }

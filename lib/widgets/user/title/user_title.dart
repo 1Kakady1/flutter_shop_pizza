@@ -21,7 +21,7 @@ class UserTitle extends StatelessWidget {
   }
 }
 
-Widget _titleAuth(User info, BuildContext context) {
+Widget _titleAuth(UserCustom info, BuildContext context) {
   final double queryData = MediaQuery.of(context).size.width;
   return Container(
     child: Row(

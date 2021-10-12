@@ -1,20 +1,20 @@
-class User {
+class UserCustom {
+  String id;
   String name;
   String email;
   String address;
   String? preview;
-  User(
+  UserCustom(
       {required this.name,
+      required this.id,
       required this.email,
       required this.address,
       preview});
-  factory User.initial() => User(
-        name: "",
-        email: "",
-        address: "",
-      );
-  User copyWith({email, name, address, preview}) {
-    return User(
+  factory UserCustom.initial() =>
+      UserCustom(name: "", email: "", address: "", id: "");
+  UserCustom copyWith({email, name, address, preview, id}) {
+    return UserCustom(
+        id: id ?? this.id,
         name: name ?? this.name,
         email: email ?? this.email,
         address: address ?? this.address,

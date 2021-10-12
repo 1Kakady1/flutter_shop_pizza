@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:pizza_time/model/cart.model.dart';
-import 'package:pizza_time/redux/state/cart/cart.action.dart';
 import 'package:pizza_time/redux/state/cart/cart.selector.dart';
 import 'package:pizza_time/redux/store.dart';
+import 'package:pizza_time/routes/routes.dart';
 import 'package:pizza_time/styles/colors.dart';
 import 'package:pizza_time/widgets/buttons/cart/button_cart.dart';
 import 'package:redux/redux.dart';
@@ -15,12 +15,14 @@ class ButtonCartContainer extends StatelessWidget implements ButtonCartProps {
   final BoxDecoration? decoration;
   final double? width;
   final double? height;
+  final bool? isPressOff;
   const ButtonCartContainer(
       {Key? key,
       this.iconColor = AppColors.write,
       this.decoration,
       this.height,
-      this.width})
+      this.width,
+      this.isPressOff})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -32,7 +34,9 @@ class ButtonCartContainer extends StatelessWidget implements ButtonCartProps {
               converter: (store) => _ViewCartBtn.fromStore(store),
               builder: (context, vm) {
                 return ButtonCart(
-                  onPress: () => vm.onPress(),
+                  onPress: () => isPressOff != null
+                      ? 0
+                      : Navigator.pushNamed(context, PathRoute.cart),
                   counter: vm.counter,
                   iconColor: iconColor,
                   decoration: decoration,

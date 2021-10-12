@@ -2,15 +2,17 @@ import 'package:pizza_time/model/cart.model.dart';
 import 'package:pizza_time/model/product.model.dart';
 
 class CartAddAction {
-  final Product product;
+  final Product? product;
+  final CartItem? cartItem;
   final String size;
-  CartAddAction({required this.product, required this.size});
+  CartAddAction({this.product, this.cartItem, required this.size});
 }
 
 class CartSubAction {
-  final Product product;
+  final Product? product;
+  final CartItem? cartItem;
   final String size;
-  CartSubAction({required this.product, required this.size});
+  CartSubAction({this.product, this.cartItem, required this.size});
 }
 
 class CartRemoveAction {

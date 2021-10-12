@@ -50,6 +50,8 @@ dependencies:
   skeleton_text: ^3.0.0
   flutter_animator: ^3.1.2
   marquee: ^2.2.0
+  photo_view: ^0.13.0
+  animations: ^2.0.1
 
 dev_dependencies:
   flutter_test:
@@ -60,11 +62,12 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/images/icon.png"
+  image_path: "assets/img/icon.png"
 
 flutter_native_splash:
-  color: "#121212"
-  image: assets/images/icon.png
+  color: "#C8161D"
+  image: assets/img/icon.png
+  #background_image: assets/img/background_splash.png
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

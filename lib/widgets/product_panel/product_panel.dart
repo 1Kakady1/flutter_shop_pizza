@@ -4,8 +4,8 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:pizza_time/helpers/product.utils.dart';
 import 'package:pizza_time/model/product.model.dart';
 import 'package:pizza_time/redux/state/product/product.selector.dart';
-import 'package:pizza_time/redux/state/products/products.selector.dart';
 import 'package:pizza_time/redux/store.dart';
+import 'package:pizza_time/routes/routes.dart';
 import 'package:pizza_time/styles/colors.dart';
 import 'package:pizza_time/widgets/buttons/default/button_default.dart';
 import 'package:redux/redux.dart';
@@ -39,24 +39,31 @@ class ProductPanel extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(FlutterI18n.translate(context, "price_label"),
-                        style: Theme.of(context)
-                            .textTheme
-                            .subtitle2!
-                            .copyWith(fontSize: 16)),
-                    SizedBox(
-                      height: 6,
-                    ),
-                    Text("\$ ${price.toString()}",
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline2!
-                            .copyWith(fontSize: 24))
-                  ],
+                AnimatedOpacity(
+                  opacity:
+                      vm.product == null || vm.error != "" || vm.isLoad == true
+                          ? 0.0
+                          : 1.0,
+                  duration: const Duration(milliseconds: 500),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(FlutterI18n.translate(context, "price_label"),
+                          style: Theme.of(context)
+                              .textTheme
+                              .subtitle2!
+                              .copyWith(fontSize: 16)),
+                      SizedBox(
+                        height: 6,
+                      ),
+                      Text("\$ ${price.toString()}",
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(fontSize: 24))
+                    ],
+                  ),
                 ),
                 ButtonDefault(
                   child: Container(
@@ -74,7 +81,7 @@ class ProductPanel extends StatelessWidget {
                       ],
                     ),
                   ),
-                  onPress: () => 0,
+                  onPress: () => Navigator.pushNamed(context, PathRoute.cart),
                   decoration: BoxDecoration(
                       color: AppColors.red[200],
                       borderRadius: BorderRadius.only(
@@ -92,22 +99,24 @@ class _ViewProductPanel {
   final Product? product;
   final bool isLoad;
   final String size;
-  _ViewProductPanel({
-    required this.product,
-    required this.isLoad,
-    required this.size,
-  });
+  final String error;
+  _ViewProductPanel(
+      {required this.product,
+      required this.isLoad,
+      required this.size,
+      required this.error});
 
   bool operator ==(other) {
     return (other is _ViewProductPanel) &&
         (this.product == other.product) &&
         (this.isLoad == other.isLoad) &&
-        (this.size == other.size);
+        (this.size == other.size) &&
+        (this.error == other.error);
   }
 
   @override
   int get hashCode {
-    return product.hashCode + size.hashCode + isLoad.hashCode;
+    return product.hashCode + size.hashCode + isLoad.hashCode + error.hashCode;
   }
 
   static _ViewProductPanel fromStore(Store<AppState> store) {
@@ -115,6 +124,7 @@ class _ViewProductPanel {
     return _ViewProductPanel(
       product: ProductSelectors.products(store.state),
       isLoad: ProductSelectors.isLoad(store.state),
+      error: ProductSelectors.error(store.state),
       size: size,
     );
   }

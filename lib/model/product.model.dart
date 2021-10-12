@@ -13,7 +13,7 @@ class Product {
   late String title;
   late String? unit;
   late String url;
-  late List<String?>? gallary;
+  List<String?>? gallary;
   late dynamic price;
 
   Product({

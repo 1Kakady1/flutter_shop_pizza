@@ -34,7 +34,7 @@ class UserAvatarContainer extends StatelessWidget {
 
 class _ViewUserAvatar {
   final bool isAuth;
-  final User user;
+  final UserCustom user;
   _ViewUserAvatar({required this.isAuth, required this.user});
 
   @override

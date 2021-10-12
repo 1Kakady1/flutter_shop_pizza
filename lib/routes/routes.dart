@@ -1,9 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:pizza_time/page/auth.dart';
 import 'package:pizza_time/page/cart.dart';
 import 'package:pizza_time/page/home.dart';
+import 'package:pizza_time/page/order.dart';
 import 'package:pizza_time/page/product.dart';
 import 'package:pizza_time/page/products.dart';
 import 'package:pizza_time/widgets/drawer/drawer.dart';
+
+class PathRoute {
+  static const String home = "/";
+  static const String product = "/product";
+  static const String products = "/products";
+  static const String order = "/order";
+  static const String cart = "/cart";
+  static const String auth = "/auth";
+}
 
 class RouteItem {
   final IconData icon;
@@ -29,7 +40,7 @@ class AppRoutes {
         isMenu: true,
         icon: Icons.home,
         isPrivate: false,
-        routePath: "/",
+        routePath: PathRoute.home,
         route: (context) => AppDrawer(
               child: HomePage(),
             )),
@@ -38,22 +49,36 @@ class AppRoutes {
         isMenu: true,
         icon: Icons.shop,
         isPrivate: false,
-        routePath: "/products",
+        routePath: PathRoute.products,
         route: (context) => AppDrawer(child: ProductsPage())),
     RouteItem(
         titleKey: "menu.cart",
         isMenu: true,
         icon: Icons.shopping_bag,
         isPrivate: false,
-        routePath: "/cart",
+        routePath: PathRoute.cart,
         route: (context) => CartPage()),
     RouteItem(
         titleKey: "Product",
         isMenu: false,
         icon: Icons.pages,
         isPrivate: false,
-        routePath: "/product",
+        routePath: PathRoute.product,
         route: (context) => ProductPage()),
+    RouteItem(
+        titleKey: "Auth",
+        isMenu: true,
+        icon: Icons.pages,
+        isPrivate: false,
+        routePath: PathRoute.auth,
+        route: (context) => AuthPage()),
+    RouteItem(
+        titleKey: "Order",
+        isMenu: false,
+        icon: Icons.mail,
+        isPrivate: false,
+        routePath: PathRoute.order,
+        route: (context) => OrderPage()),
   ];
 
   List<RouteItem> getRouterList(bool isAuth) {
