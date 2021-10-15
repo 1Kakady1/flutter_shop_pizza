@@ -84,35 +84,7 @@ class Api {
     }
   }
 
-  Future<List<Product>> getProducts(
-      {int limit = 10,
-      String? field,
-      CallectionWhere? where,
-      dynamic value}) async {
-    try {
-      var request;
-      if (field != null && where != null && value != null) {
-        request = await this
-            ._apiWhere(_collectionProducts, field, where, value, limit: limit);
-      } else {
-        request = await this._collectionProducts.limit(limit).get();
-      }
-
-      var docs = request.docs;
-      List<Product> data = [];
-      docs.forEach((element) {
-        var doc = element.data();
-        doc['id'] = element.id;
-        data.add(Product.fromJson(doc));
-      });
-      return data;
-    } catch (e) {
-      log("products error: ${e.toString()} ${e.hashCode}");
-      return throw (e.toString());
-    }
-  }
-
-  Future<List<Category>> getCategoryes({int limit = 10}) async {
+  Future<ApiData<List<Category>>> getCategories({int limit = 10}) async {
     try {
       var request = await this._collectionCategories.limit(limit).get();
       var docs = request.docs;
@@ -122,22 +94,24 @@ class Api {
         doc['id'] = element.id;
         data.add(Category.fromJson(doc));
       });
-      return data;
+      return ApiData<List<Category>>(
+          data: data, error: "", hashCode: data.hashCode);
     } catch (e) {
-      log("cat error: ${e.toString()} ${e.hashCode}");
-      return throw (e.toString());
+      return ApiData(
+          data: [], error: "Error ${e.toString()}", hashCode: e.hashCode);
     }
   }
 
-  Future<Category> getCategoryById(String id) async {
+  Future<ApiData<Category?>> getCategoryById(String id) async {
     try {
       var request = await this._collectionCategories.doc(id).get();
       var map = request.data();
       map!["id"] = request.id;
       Category data = Category.fromJson(map);
-      return data;
+      return ApiData<Category>(data: data, error: "", hashCode: data.hashCode);
     } catch (e) {
-      return throw (e.toString());
+      return ApiData(
+          data: null, error: "Error ${e.toString()}", hashCode: e.hashCode);
     }
   }
 
@@ -147,11 +121,11 @@ class Api {
       CallectionWhere? where,
       dynamic value}) async {
     try {
-      List<Product> products = await getProducts(
+      ApiData<List<Product>> products = await getProductsRequest(
           limit: limit, where: where, field: field, value: value);
-      List<Category> cat = await getCategoryes();
+      ApiData<List<Category>> cat = await getCategories();
       return ApiData<HomeReduserModelSetHome>(
-          data: HomeReduserModelSetHome(cat: cat, products: products),
+          data: HomeReduserModelSetHome(cat: cat.data, products: products.data),
           error: "",
           hashCode: products.hashCode);
     } catch (e) {

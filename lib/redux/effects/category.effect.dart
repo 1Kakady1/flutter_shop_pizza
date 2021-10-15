@@ -30,3 +30,23 @@ Stream<dynamic> changeProductsTheCategory(
     });
   });
 }
+
+Stream<dynamic> effectGetCategorys(
+  Stream<dynamic> actions,
+  EpicStore<AppState> store,
+) {
+  return actions.whereType<ChangeCategorysSliverAction>().switchMap((
+    action,
+  ) {
+    return Stream.fromFuture(_api.getCategories()).expand((element) {
+      final data = element.data;
+      if (element.error == "") {
+        return [
+          CategorysRequestSuccessAction(
+              categorys: data, error: "", isLoad: false),
+        ];
+      }
+      return [CategorysRequestErrorAction(isLoad: false, error: element.error)];
+    });
+  });
+}

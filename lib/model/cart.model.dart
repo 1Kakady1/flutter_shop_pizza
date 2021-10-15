@@ -1,5 +1,8 @@
 import 'package:pizza_time/model/product_filter.model.dart';
 
+typedef ChangeCartItemCommentsType = void Function(
+    String id, String size, String? comments);
+
 class CartItem {
   final String title;
   final String preview;

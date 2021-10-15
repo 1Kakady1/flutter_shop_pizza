@@ -7,6 +7,8 @@ Reducer<Products> productsReducer = combineReducers([
   new TypedReducer<Products, GotoCategoryProducts>(_gotoCategoryProducts),
   new TypedReducer<Products, RequestProductsSuccessAction>(
       _requestProductsSuccess),
+  new TypedReducer<Products, RequestProductsAction>(_requestProducts),
+  new TypedReducer<Products, RequestProductsErrorAction>(_requestProductsError),
 ]);
 
 Products _setProducts(Products state, SetProductsAction action) {
@@ -18,8 +20,17 @@ Products _gotoCategoryProducts(Products state, GotoCategoryProducts action) {
   return state.copyWith(isLoad: action.isLoad, error: action.error);
 }
 
+Products _requestProducts(Products state, RequestProductsAction action) {
+  return state.copyWith(error: action.error, isLoad: action.isLoad);
+}
+
 Products _requestProductsSuccess(
     Products state, RequestProductsSuccessAction action) {
   return state.copyWith(
       products: action.products, error: action.error, isLoad: action.isLoad);
+}
+
+Products _requestProductsError(
+    Products state, RequestProductsErrorAction action) {
+  return state.copyWith(error: action.error, isLoad: action.isLoad);
 }

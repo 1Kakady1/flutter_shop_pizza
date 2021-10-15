@@ -34,6 +34,8 @@ class AnimatedListCustom extends StatelessWidget {
         child: CardCartItem(
           product: item,
           animation: animation,
+          onChangeComments: (String id, String size, String? comment) =>
+              {_onChangeComments(id, size, comment, index, context)},
           onSub: () =>
               {_onSub(item, item.productSize, item.count, index, context)},
           onAdd: () =>
@@ -48,6 +50,14 @@ class AnimatedListCustom extends StatelessWidget {
         StoreProvider.of<AppState>(context, listen: false);
     if (product != null)
       store.dispatch(CartAddAction(cartItem: product, size: size));
+  }
+
+  void _onChangeComments(String id, String size, String? comment, int index,
+      BuildContext context) {
+    final Store<AppState> store =
+        StoreProvider.of<AppState>(context, listen: false);
+    store.dispatch(
+        CartChangeCommentsAction(id: id, size: size, comments: comment ?? ""));
   }
 
   void _onRemove(

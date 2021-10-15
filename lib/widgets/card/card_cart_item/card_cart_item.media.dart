@@ -24,7 +24,7 @@ class CardCartItemMedia {
         }
       },
       0: {
-        "container_height": 140.0,
+        "container_height": 230.0,
         "size_img": 140.0,
         "title_width": 110.0,
         "title_font_size": 18.0,
@@ -36,6 +36,7 @@ class CardCartItemMedia {
           'right': 26.0,
         },
         "price": {
+          "container_height": 120.0,
           "size": 20.0,
           "size_unit": 10.0,
           "contianer": {"width": 80.0}

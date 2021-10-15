@@ -1,5 +1,6 @@
 import 'package:pizza_time/redux/effects/category.effect.dart';
 import 'package:pizza_time/redux/effects/product.effect.dart';
+import 'package:pizza_time/redux/effects/products.effect.dart';
 import 'package:pizza_time/redux/state/home/home.effect.dart';
 import 'package:pizza_time/redux/store.dart';
 import 'package:pizza_time/widgets/carusel-category/carusel-category.effect.dart';
@@ -12,4 +13,6 @@ final epic = combineEpics<AppState>([
   gotoAllCategoryProducts,
   changeProductsTheCategory,
   effectGetProductByID,
+  effectGetProducts,
+  effectGetCategorys
 ]);

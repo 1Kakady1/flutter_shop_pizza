@@ -13,7 +13,6 @@ import 'package:pizza_time/redux/state/user/user.model.dart';
 import 'package:pizza_time/redux/state/user/user.reducer.dart';
 import 'package:redux/redux.dart';
 import 'package:redux_epics/redux_epics.dart';
-import 'package:redux_thunk/redux_thunk.dart';
 import 'package:redux_logging/redux_logging.dart';
 import 'package:redux_dev_tools/redux_dev_tools.dart';
 
@@ -63,15 +62,11 @@ AppState _state = AppState(
 );
 
 Store<AppState> storeApp = Store(_reducer,
-    middleware: [
-      thunkMiddleware,
-      new LoggingMiddleware.printer(),
-      _epicMiddleware
-    ],
+    middleware: [new LoggingMiddleware.printer(), _epicMiddleware],
     initialState: _state);
 
-final storeAppDev = DevToolsStore(_reducer,
-    initialState: _state, middleware: [thunkMiddleware]);
+final storeAppDev =
+    DevToolsStore(_reducer, initialState: _state, middleware: []);
 
 class AppSelectors {
   static AppState appSelector(AppState state) => state;

@@ -14,7 +14,8 @@ class CaruselCategoryContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         child: StoreConnector<AppState, _ViewCaruselCategory>(
-            onInit: (store) => store.dispatch(getCategorys(store)),
+            onInit: (store) =>
+                store.dispatch(CategorysRequestAction(error: "", isLoad: true)),
             converter: (store) => _ViewCaruselCategory.fromStore(store),
             builder: (context, vm) {
               return CaruselCategory(

@@ -21,4 +21,12 @@ class CartRemoveAction {
   CartRemoveAction({required this.product, required this.size});
 }
 
+class CartChangeCommentsAction {
+  final String? comments;
+  final String id;
+  final String size;
+  CartChangeCommentsAction(
+      {this.comments, required this.id, required this.size});
+}
+
 class CartClearAction {}

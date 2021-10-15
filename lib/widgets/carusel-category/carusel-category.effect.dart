@@ -14,13 +14,13 @@ Stream<dynamic> changeCatHomeEpic(
   return actions.whereType<ChangeHomeCategorysAction>().switchMap((action) {
     SetProductsAction(products: [], error: "", isLoad: true);
     return Stream.fromFuture(_api
-        .getProducts(
+        .getProductsRequest(
             limit: 4,
             field: "cat",
             where: CallectionWhere.arrayContainsIsEqualToTop,
             value: action.currentCat)
         .then((results) => ChangeProductsHomeAction(
-            products: results, error: "", isLoad: false))
+            products: results.data, error: "", isLoad: false))
         .catchError((error) =>
             ChangeProductsHomeAction(products: [], error: "", isLoad: false)));
   });

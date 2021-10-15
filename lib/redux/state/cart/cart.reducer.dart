@@ -8,6 +8,7 @@ Reducer<CartModelState> cartReducer = combineReducers([
   new TypedReducer<CartModelState, CartSubAction>(_subCartProduct),
   new TypedReducer<CartModelState, CartRemoveAction>(_removeCartProduct),
   new TypedReducer<CartModelState, CartClearAction>(_clearCartProduct),
+  new TypedReducer<CartModelState, CartChangeCommentsAction>(_changeComments),
 ]);
 
 CartModelState _addCartProduct(CartModelState state, CartAddAction action) {
@@ -77,4 +78,13 @@ CartModelState _removeCartProduct(
 
 CartModelState _clearCartProduct(CartModelState state, CartClearAction action) {
   return state.copyWith(products: []);
+}
+
+CartModelState _changeComments(
+    CartModelState state, CartChangeCommentsAction action) {
+  List<CartItem> items = [...state.products];
+  int itemIndex = items
+      .indexWhere((x) => x.id == action.id && x.productSize == action.size);
+  items[itemIndex] = items[itemIndex].copyWith(comments: action.comments ?? "");
+  return state.copyWith(products: items.toList());
 }

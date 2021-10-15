@@ -22,7 +22,9 @@ class ProductSliverContainer extends StatelessWidget {
             onInit: (store) => {
                   if (store.state.products.products.length == 0)
                     {
-                      store.dispatch(getProducts(
+                      store.dispatch(RequestProductsAction(
+                          error: "",
+                          isLoad: true,
                           field: "cat",
                           where: CallectionWhere.arrayContains,
                           value: store.state.category.currentCat))
