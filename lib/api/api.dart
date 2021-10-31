@@ -2,7 +2,9 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:pizza_time/env.dart';
 import 'package:pizza_time/model/category.model.dart';
+import 'package:pizza_time/model/order.model.dart';
 import 'package:pizza_time/model/product.model.dart';
 import 'package:pizza_time/model/user.dart';
 import 'package:pizza_time/redux/state/home/home.model.dart';
@@ -26,6 +28,8 @@ class ApiData<T> {
 class Api {
   var _collectionProducts = FirebaseFirestore.instance.collection('products');
   var _collectionCategories = FirebaseFirestore.instance.collection('cat');
+  var _collectionOrders = FirebaseFirestore.instance.collection('orders');
+
   var _auth = FirebaseAuth.instance;
   _apiWhere(CollectionReference<Map<String, dynamic>> collection, String field,
       CallectionWhere type, dynamic value,
@@ -161,6 +165,28 @@ class Api {
       log("products error: ${e.toString()} ${e.hashCode}");
       return ApiData<List<Product>>(
           data: [], error: e.toString(), hashCode: e.hashCode);
+    }
+  }
+
+  Future<ApiData<bool?>> createOrder(OrderModel data) async {
+    try {
+      List<Map<String, dynamic>> cartJson =
+          data.products.map((e) => (e.toJson())).toList();
+
+      var rez = _collectionOrders.add({
+        "key": data.key ?? Env.orderKey,
+        "name": data.name,
+        "email": data.email,
+        "date": DateTime.parse(data.date),
+        "comments": data.comments,
+        "address": data.address,
+        "products": cartJson,
+        "userID": data.userID ?? 'not_register_user',
+      });
+      return ApiData<bool>(data: true, error: "", hashCode: rez.hashCode);
+    } catch (e) {
+      return ApiData(
+          data: null, error: "Error ${e.toString()}", hashCode: e.hashCode);
     }
   }
 }

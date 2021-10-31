@@ -1,9 +1,21 @@
-import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:mapbox_search/mapbox_search.dart';
+import 'package:pizza_time/api/api.dart';
+import 'package:pizza_time/helpers/form_validator.dart';
+import 'package:pizza_time/model/cart.model.dart';
+import 'package:pizza_time/model/order.model.dart';
+import 'package:pizza_time/redux/state/cart/cart.selector.dart';
+import 'package:pizza_time/redux/store.dart';
 import 'package:pizza_time/styles/colors.dart';
 import 'package:pizza_time/widgets/background_painter/background_painter.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:pizza_time/widgets/city_search/city_search.dart';
+import 'package:pizza_time/widgets/input_date/input_date.dart';
+import 'package:redux/redux.dart';
 
 class OrderPage extends StatefulWidget {
   OrderPage({Key? key}) : super(key: key);
@@ -12,39 +24,47 @@ class OrderPage extends StatefulWidget {
 }
 
 class _OrderPageState extends State<OrderPage>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, InputValidationMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   late AnimationController _controller;
   bool isActive = false;
-  late Timer _timer;
   final _formKey = GlobalKey<FormState>();
+  late String _address;
+  late TextEditingController _email;
+  late TextEditingController _phone;
+  late TextEditingController _date;
+  late TextEditingController _fullName;
+  late TextEditingController _comments;
+  bool isSending = false;
   @override
   void initState() {
     _controller = AnimationController(
         vsync: this, duration: const Duration(seconds: 200));
     _controller.forward();
-    _timer = new Timer.periodic(const Duration(seconds: 300), (Timer timer) {
-      setState(() {
-        if (isActive == true) {
-          _controller.forward();
-        } else {
-          _controller.reverse();
-        }
-        isActive = !isActive;
-      });
-    });
+    _address = "";
+    _email = TextEditingController(text: "");
+    _phone = TextEditingController(text: "");
+    _date = TextEditingController(text: "");
+    _fullName = TextEditingController(text: "");
+    _comments = TextEditingController(text: "");
     super.initState();
   }
 
   @override
   void dispose() {
     _controller.dispose();
-    _timer.cancel();
+    _email.dispose();
+    _phone.dispose();
+    _date.dispose();
+    _fullName.dispose();
+    _comments.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    var maskFormatter = new MaskTextInputFormatter(
+        mask: '+# (###) ###-##-##', filter: {"#": RegExp(r'[0-9]')});
     return Scaffold(
       resizeToAvoidBottomInset: false,
       key: _scaffoldKey,
@@ -52,6 +72,7 @@ class _OrderPageState extends State<OrderPage>
           builder: (BuildContext context, BoxConstraints constraints) {
         final mediaWidth = constraints.maxWidth;
         final mediaHeight = constraints.maxHeight;
+
         return Stack(
           children: [
             SizedBox.expand(
@@ -64,42 +85,168 @@ class _OrderPageState extends State<OrderPage>
             Center(
               child: Container(
                 width: mediaWidth,
-                height: mediaHeight / 2,
+                height: mediaHeight - 200,
                 padding: const EdgeInsets.all(20),
                 margin: const EdgeInsets.all(50),
                 decoration: BoxDecoration(
                     color: AppColors.write.withOpacity(0.5),
                     borderRadius:
                         const BorderRadius.all(const Radius.circular(40))),
-                child: Form(
-                    key: _formKey,
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          TextFormField(
-                            // The validator receives the text that the user has entered.
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter some text';
-                              }
-                              return null;
-                            },
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 16.0),
-                            child: ElevatedButton(
-                              onPressed: () {
-                                if (_formKey.currentState!.validate()) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text('Processing Data')),
-                                  );
+                child: SingleChildScrollView(
+                  physics: AlwaysScrollableScrollPhysics(),
+                  child: Form(
+                      key: _formKey,
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            TextFormField(
+                              controller: _fullName,
+                              decoration: const InputDecoration(
+                                icon: Icon(
+                                  Icons.person,
+                                  color: AppColors.black,
+                                ),
+                                hintText: 'What do people call you?',
+                                labelText: 'Name *',
+                              ),
+                              validator: (value) {
+                                if (!isRequired(value)) {
+                                  return 'Please enter some text';
                                 }
+                                return null;
                               },
-                              child: const Text('Submit'),
                             ),
-                          ),
-                        ])),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            TextFormField(
+                              controller: _email,
+                              decoration: const InputDecoration(
+                                icon: Icon(
+                                  Icons.email,
+                                  color: AppColors.black,
+                                ),
+                                hintText: 'example@exp.com',
+                                labelText: 'Email *',
+                              ),
+                              validator: (value) {
+                                if (!isRequired(value)) {
+                                  return 'Please enter some text';
+                                }
+                                if (!isEmailValid(value ?? "")) {
+                                  return 'Error email';
+                                }
+
+                                return null;
+                              },
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            TextFormField(
+                              controller: _phone,
+                              inputFormatters: [maskFormatter],
+                              decoration: const InputDecoration(
+                                icon: Icon(
+                                  Icons.call,
+                                  color: AppColors.black,
+                                ),
+                                hintText: '',
+                                labelText: 'Phone *',
+                              ),
+                              validator: (value) {
+                                if (!isRequired(value)) {
+                                  return 'Please enter some text';
+                                }
+                                if (!isEqualsNumber(value?.length ?? 0, 18)) {
+                                  return 'Phone error';
+                                }
+                                print("lenghr phone ${value?.length}");
+                                return null;
+                              },
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            InputDate(
+                              label: "Date *",
+                              controller: _date,
+                              onConfirm: (String value) {
+                                _date.text = value;
+                              },
+                              validator: (String? value) {
+                                if (value == null || value == "") {
+                                  return 'Please enter some text';
+                                }
+                                return null;
+                              },
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            CitySearch(
+                              snackbar: _snackBar,
+                              label: "Address*",
+                              value: _address,
+                              onSetValue: (MapBoxPlace value) {
+                                setState(() {
+                                  _address = value.placeName ?? "";
+                                });
+                              },
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 1),
+                              child: TextFormField(
+                                controller: _comments,
+                                decoration: const InputDecoration(
+                                  icon: Icon(
+                                    Icons.comment,
+                                    color: AppColors.black,
+                                  ),
+                                  labelText: 'You comments',
+                                ),
+                                validator: (value) {
+                                  final len = value?.length ?? 0;
+                                  if (len > 30) {
+                                    return 'Message max len 30';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                            SizedBox(
+                              height: 22,
+                            ),
+                            Center(
+                              child: Container(
+                                child: Stack(children: [
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        primary: AppColors.red[200],
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 40, vertical: 16)),
+                                    onPressed: _onSend,
+                                    child: Text('Отправить'),
+                                  ),
+                                  Positioned(
+                                      right: 10,
+                                      top: 20,
+                                      child: SizedBox(
+                                          width: 12,
+                                          height: 12,
+                                          child: isSending
+                                              ? CircularProgressIndicator(
+                                                  strokeWidth: 2.0,
+                                                  color: AppColors.write)
+                                              : null))
+                                ]),
+                              ),
+                            ),
+                          ])),
+                ),
               ),
             )
           ],
@@ -107,4 +254,39 @@ class _OrderPageState extends State<OrderPage>
       }),
     );
   }
+
+  void _onSend() {
+    final Store<AppState> store = StoreProvider.of<AppState>(context);
+    final List<CartItem> cart = CartSelectors.products(store.state);
+    log(_formKey.currentState.toString());
+    if (_formKey.currentState!.validate()) {
+      final test = Api();
+      test
+          .createOrder(OrderModel(
+              name: _fullName.text,
+              email: _email.text,
+              date: _date.text,
+              address: _address,
+              products: cart))
+          .then((value) => log("OK: ${value}"));
+      ScaffoldMessenger.of(context).showSnackBar(
+        _snackBar("Create order"),
+      );
+    }
+  }
+}
+
+SnackBar _snackBar(String msg) {
+  return SnackBar(
+    content: Text(msg),
+    duration: const Duration(milliseconds: 2000),
+    width: 310.0, // Width of the SnackBar.
+    padding: const EdgeInsets.symmetric(
+      horizontal: 8.0, // Inner padding for SnackBar content.
+    ),
+    behavior: SnackBarBehavior.floating,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10.0),
+    ),
+  );
 }

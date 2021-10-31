@@ -21,15 +21,13 @@ class ButtonBack extends StatelessWidget {
       this.decoration});
   @override
   Widget build(BuildContext context) {
-    final double queryData = MediaQuery.of(context).size.width;
-    final double size = queryData > 600 ? iconSize! + 20.0 : iconSize!;
     return Container(
       width: width,
       height: height,
       margin: margin,
       decoration: decoration,
       child: IconButton(
-        iconSize: size,
+        iconSize: iconSize ?? 24.0,
         icon: Icon(
           Icons.chevron_left,
           color: iconColor,

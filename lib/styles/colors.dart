@@ -15,7 +15,10 @@ class AppColors {
 
 class Palette {
   static const Color darkBlue = Color(0xff092E34);
+  static const Color darkRed = Color(0xFF910203);
   static const Color lightBlue = Color(0xff489FB5);
+  static const Color lightRed = Color(0xFFC8161D);
+  static const Color yellow = Color(0xFF00afae);
   static const Color orange = Color(0xffFFA62B);
   static const Color darkOrange = Color(0xffCC7700);
 }

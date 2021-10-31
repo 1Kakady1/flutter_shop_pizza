@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:marquee/marquee.dart';
+import 'package:pizza_time/helpers/media_query.dart';
 import 'package:pizza_time/helpers/product.utils.dart';
 import 'package:pizza_time/model/cart.model.dart';
 import 'package:pizza_time/styles/colors.dart';
@@ -55,18 +56,17 @@ class _CardCartItemState extends State<CardCartItem> {
         size: size);
     final double mediaWidth =
         MediaQuery.of(context).size.width >= 600 ? 600 : 0;
-    final Map<int, Map<String, dynamic>> mapMedia =
-        CardCartItemMedia.mapMedia(mediaWidth);
+    final styles = getMediaQueryStyles(MediaQuery.of(context).size.width,
+        MediaSizeEnum.sm, CardCartItemMedia.mapMedia);
     final TextStyle titileStyle = TextStyle(
-        fontSize: mapMedia[mediaWidth]!["title_font_size"],
-        fontWeight: FontWeight.bold);
+        fontSize: styles!["title_font_size"], fontWeight: FontWeight.bold);
     final String sizeTitle = widget.product.isUnit == true
         ? "${(int.parse(widget.product.productSize) / 1000).toString()}"
         : widget.product.productSize.toUpperCase();
     return ScaleTransition(
       scale: widget.animation,
       child: Container(
-        height: mapMedia[mediaWidth]!["container_height"],
+        height: styles["container_height"],
         decoration: BoxDecoration(
           color: Theme.of(context).backgroundColor,
           borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -89,15 +89,15 @@ class _CardCartItemState extends State<CardCartItem> {
                     child: Stack(children: [
                       Image.network(
                         widget.product.preview,
-                        width: mapMedia[mediaWidth]!["size_img"],
-                        height: mapMedia[mediaWidth]!["size_img"],
+                        width: styles["size_img"],
+                        height: styles["size_img"],
                         fit: BoxFit.cover,
                         errorBuilder: (BuildContext context, Object exception,
                             StackTrace? stackTrace) {
                           return Image.asset(
                             "assets/img/no-img.png",
-                            width: mapMedia[mediaWidth]!["size_img"],
-                            height: mapMedia[mediaWidth]!["size_img"],
+                            width: styles["size_img"],
+                            height: styles["size_img"],
                             fit: BoxFit.cover,
                           );
                         },
@@ -123,7 +123,7 @@ class _CardCartItemState extends State<CardCartItem> {
                   width: mediaWidth >= 600 ? 30 : 0,
                 ),
                 Container(
-                  height: mapMedia[mediaWidth]!["size_img"],
+                  height: styles["size_img"],
                   child: Padding(
                     padding: EdgeInsets.all(mediaWidth >= 600 ? 24.00 : 10.0),
                     child: Row(
@@ -135,7 +135,7 @@ class _CardCartItemState extends State<CardCartItem> {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             Container(
-                                width: mapMedia[mediaWidth]!["title_width"],
+                                width: styles["title_width"],
                                 height: 40,
                                 child: mediaWidth < 600
                                     ? Marquee(
@@ -157,11 +157,10 @@ class _CardCartItemState extends State<CardCartItem> {
                           ],
                         ),
                         SizedBox(
-                          width: 20,
+                          width: 6,
                         ),
                         Container(
-                          width: mapMedia[mediaWidth]!["price"]["contianer"]
-                              ["width"],
+                          width: styles["price"]["contianer"]["width"],
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -183,8 +182,7 @@ class _CardCartItemState extends State<CardCartItem> {
                                     .copyWith(
                                         fontWeight: FontWeight.w600,
                                         color: AppColors.red[200],
-                                        fontSize: mapMedia[mediaWidth]!["price"]
-                                            ["size"]),
+                                        fontSize: styles["price"]["size"]),
                               ),
                             ],
                           ),

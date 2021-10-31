@@ -1,11 +1,12 @@
+import 'package:pizza_time/helpers/media_query.dart';
+
 class CardProductSmallMedia {
   final double media;
 
   CardProductSmallMedia(this.media);
-
-  static Map<int, Map<String, dynamic>> mapMedia(double media) {
+  static Map<MediaSizeEnum, Map<String, dynamic>> mapMedia() {
     return {
-      600: {
+      MediaSizeEnum.sm: {
         "container_height": 200.0,
         "size_img": 200.0,
         "title_width": 260.0,
@@ -23,7 +24,7 @@ class CardProductSmallMedia {
           "contianer": {"width": 120.0}
         }
       },
-      0: {
+      MediaSizeEnum.ssm: {
         "container_height": 140.0,
         "size_img": 140.0,
         "title_width": 110.0,

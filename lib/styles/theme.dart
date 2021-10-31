@@ -17,22 +17,22 @@ ThemeData customThemeLight() {
     backgroundColor: AppColors.backgroundColor,
     primaryTextTheme: _customTextTheme(base.primaryTextTheme),
     buttonTheme: _customButtonTheme(base.buttonTheme),
-    // elevatedButtonTheme:
-    //     _customElevatedButtonThemeData(base.elevatedButtonTheme),
+    inputDecorationTheme:
+        _customInputDecorationTheme(base.inputDecorationTheme),
   );
+}
+
+InputDecorationTheme _customInputDecorationTheme(InputDecorationTheme base) {
+  return base.copyWith(
+      labelStyle: TextStyle(color: AppColors.black),
+      focusedBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: AppColors.black),
+      ));
 }
 
 ButtonThemeData _customButtonTheme(ButtonThemeData base) {
   return base.copyWith(buttonColor: AppColors.red[200]);
 }
-
-// ElevatedButtonThemeData _customElevatedButtonThemeData(
-//     ElevatedButtonThemeData base) {
-//   return ElevatedButtonThemeData(
-//       style: base.style!.copyWith(
-//     backgroundColor: MaterialStateProperty.all<Color>(Colors.white10),
-//   ));
-// }
 
 TextTheme _customTextTheme(TextTheme base) {
   return base

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:marquee/marquee.dart';
+import 'package:pizza_time/helpers/media_query.dart';
 import 'package:pizza_time/helpers/product.utils.dart';
 import 'package:pizza_time/model/product.model.dart';
 import 'package:pizza_time/styles/colors.dart';
@@ -22,17 +23,17 @@ class CardProductSmall extends StatelessWidget {
     final String unit =
         product.isUnit == true && size != null ? "($size ${product.unit})" : "";
     final List<String> categorys = product.cat;
-
+    print(MediaQuery.of(context).size.width);
     final double mediaWidth =
         MediaQuery.of(context).size.width >= 600 ? 600 : 0;
-    final Map<int, Map<String, dynamic>> mapMedia =
-        CardProductSmallMedia.mapMedia(mediaWidth);
+    final styles = getMediaQueryStyles(
+        mediaWidth, MediaSizeEnum.sm, CardProductSmallMedia.mapMedia);
+
     final TextStyle titileStyle = TextStyle(
-        fontSize: mapMedia[mediaWidth]!["title_font_size"],
-        fontWeight: FontWeight.bold);
+        fontSize: styles!["title_font_size"], fontWeight: FontWeight.bold);
 
     return Container(
-      height: mapMedia[mediaWidth]!["container_height"],
+      height: styles["container_height"],
       decoration: BoxDecoration(
         color: Theme.of(context).backgroundColor,
         borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -53,15 +54,15 @@ class CardProductSmall extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10.0),
                 child: Image.network(
                   product.preview,
-                  width: mapMedia[mediaWidth]!["size_img"],
-                  height: mapMedia[mediaWidth]!["size_img"],
+                  width: styles["size_img"],
+                  height: styles["size_img"],
                   fit: BoxFit.cover,
                   errorBuilder: (BuildContext context, Object exception,
                       StackTrace? stackTrace) {
                     return Image.asset(
                       "assets/img/no-img.png",
-                      width: mapMedia[mediaWidth]!["size_img"],
-                      height: mapMedia[mediaWidth]!["size_img"],
+                      width: styles["size_img"],
+                      height: styles["size_img"],
                       fit: BoxFit.cover,
                     );
                   },
@@ -80,7 +81,7 @@ class CardProductSmall extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                            width: mapMedia[mediaWidth]!["title_width"],
+                            width: styles["title_width"],
                             height: 40,
                             child: mediaWidth < 600
                                 ? Marquee(
@@ -128,12 +129,11 @@ class CardProductSmall extends StatelessWidget {
                       ],
                     ),
                     SizedBox(
-                      width: 20,
+                      width: mediaWidth >= 600 ? 20.00 : 10.0,
                     ),
                     Container(
-                      width: mapMedia[mediaWidth]!["price"]["contianer"]
-                          ["width"],
-                      height: mapMedia[mediaWidth]!["container_height"],
+                      width: styles["price"]["contianer"]["width"],
+                      height: styles["container_height"],
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -146,8 +146,7 @@ class CardProductSmall extends StatelessWidget {
                                 .copyWith(
                                     fontWeight: FontWeight.w600,
                                     color: AppColors.red[200],
-                                    fontSize: mapMedia[mediaWidth]!["price"]
-                                        ["size"]),
+                                    fontSize: styles["price"]["size"]),
                           ),
                           Text(
                             "$unit",
@@ -156,8 +155,7 @@ class CardProductSmall extends StatelessWidget {
                                 .subtitle1!
                                 .copyWith(
                                     fontWeight: FontWeight.w600,
-                                    fontSize: mapMedia[mediaWidth]!["price"]
-                                        ["size_unit"]),
+                                    fontSize: styles["price"]["size_unit"]),
                           )
                         ],
                       ),
@@ -177,14 +175,14 @@ class CardProductSmall extends StatelessWidget {
                 ))),
         product.isTop == true
             ? Positioned(
-                right: mapMedia[mediaWidth]!["bookmark"]["right"],
+                right: styles["bookmark"]["right"],
                 top: -10,
                 child: Bookmark(
                   text: "TOP",
-                  top: mapMedia[mediaWidth]!["bookmark"]["top"],
-                  width: mapMedia[mediaWidth]!["bookmark"]["width"],
-                  heigt: mapMedia[mediaWidth]!["bookmark"]["height"],
-                  fontSize: mapMedia[mediaWidth]!["bookmark"]["size"],
+                  top: styles["bookmark"]["top"],
+                  width: styles["bookmark"]["width"],
+                  heigt: styles["bookmark"]["height"],
+                  fontSize: styles["bookmark"]["size"],
                 ))
             : SizedBox()
       ]),

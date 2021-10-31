@@ -19,6 +19,7 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final EdgeInsets? paddingActions;
   final bool? isHideUserAvatar;
   final Color? color;
+  final double? toolbarHeight;
   CustomAppBar(
       {Key? key,
       this.onBack,
@@ -27,6 +28,7 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
       this.leading,
       this.elevation,
       this.title,
+      this.toolbarHeight,
       this.paddingActions,
       this.isHideUserAvatar,
       required this.scaffold,
@@ -45,6 +47,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      toolbarHeight: widget.toolbarHeight,
       backgroundColor: widget.color,
       title: widget.title,
       actions: [

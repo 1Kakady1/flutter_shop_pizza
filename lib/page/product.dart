@@ -1,8 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:pizza_time/helpers/media_query.dart';
 import 'package:pizza_time/model/cart.model.dart';
 import 'package:pizza_time/model/product.model.dart';
 import 'package:pizza_time/model/product_filter.model.dart';
@@ -38,6 +37,9 @@ class _ProductPageState extends State<ProductPage> {
     final Store<AppState> store = StoreProvider.of<AppState>(context);
     final arguments =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+    final styles = getMediaQueryStyles(MediaQuery.of(context).size.width,
+        MediaSizeEnum.sm, ProductMedia.mapMedia);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       key: _scaffoldKey,
@@ -72,6 +74,7 @@ class _ProductPageState extends State<ProductPage> {
                           child: Column(
                             children: [
                               CustomAppBar(
+                                toolbarHeight: styles?['toolbar_height'],
                                 scaffold: _scaffoldKey,
                                 isHideUserAvatar: true,
                                 elevation: 0,
@@ -111,7 +114,7 @@ class _ProductPageState extends State<ProductPage> {
                                     padding: const EdgeInsets.only(bottom: 45),
                                     child: Container(
                                       width: double.infinity,
-                                      height: 526.0,
+                                      height: styles!['circular_height'],
                                       decoration: BoxDecoration(
                                         color: AppColors.write,
                                         boxShadow: [
@@ -135,7 +138,10 @@ class _ProductPageState extends State<ProductPage> {
                                             vm.product?.title ?? "",
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .headline2,
+                                                .headline2!
+                                                .copyWith(
+                                                    fontSize:
+                                                        styles["title_size"]),
                                           ),
                                           SizedBox(
                                             height: 15,
@@ -147,7 +153,10 @@ class _ProductPageState extends State<ProductPage> {
                                               vm.product?.desc ?? "",
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .subtitle2,
+                                                  .subtitle2!
+                                                  .copyWith(
+                                                      fontSize:
+                                                          styles["desc_size"]),
                                               overflow: TextOverflow.ellipsis,
                                               maxLines: 4,
                                               softWrap: false,
@@ -161,8 +170,10 @@ class _ProductPageState extends State<ProductPage> {
                                                   BorderRadius.circular(20.0),
                                               child: Image.network(
                                                 vm.product?.preview ?? "",
-                                                width: 220,
-                                                height: 220,
+                                                width: styles['preview']
+                                                    ['width'],
+                                                height: styles['preview']
+                                                    ['height'],
                                                 fit: BoxFit.cover,
                                                 errorBuilder: (BuildContext
                                                         context,
@@ -170,19 +181,23 @@ class _ProductPageState extends State<ProductPage> {
                                                     StackTrace? stackTrace) {
                                                   return Image.asset(
                                                     "assets/img/no-img.png",
-                                                    width: 220,
-                                                    height: 220,
+                                                    width: styles['preview']
+                                                        ['width'],
+                                                    height: styles['preview']
+                                                        ['height'],
                                                     fit: BoxFit.cover,
                                                   );
                                                 },
                                               )),
                                           SizedBox(
-                                            height: 26,
+                                            height: styles['preview']
+                                                ['margin_bottom'],
                                           ),
                                           _sizeButton(
                                               vm.product?.filter,
                                               store,
                                               vm.size,
+                                              styles,
                                               vm.product?.isUnit,
                                               vm.product?.unit)
                                         ],
@@ -200,18 +215,22 @@ class _ProductPageState extends State<ProductPage> {
                                       : SizedBox(),
                                 ],
                               ),
-                              Container(
-                                padding: EdgeInsets.symmetric(horizontal: 50.0),
-                                child: Conuter(
-                                  counter: count,
-                                  onAdd: () =>
-                                      _onAdd(vm.product, vm.size, count),
-                                  onSub: () =>
-                                      _onSub(vm.product, vm.size, count),
+                              Transform.scale(
+                                scale: styles['counter']["scale"],
+                                child: Container(
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 50.0),
+                                  child: Conuter(
+                                    counter: count,
+                                    onAdd: () =>
+                                        _onAdd(vm.product, vm.size, count),
+                                    onSub: () =>
+                                        _onSub(vm.product, vm.size, count),
+                                  ),
                                 ),
                               ),
                               SizedBox(
-                                height: 20,
+                                height: styles['counter']["margin_bottom"],
                               ),
                               vm.product?.gallary != null
                                   ? Column(
@@ -222,6 +241,9 @@ class _ProductPageState extends State<ProductPage> {
                                         Text(
                                           FlutterI18n.translate(
                                               context, "title.gallery"),
+                                          style: TextStyle(
+                                              fontSize:
+                                                  styles['gallery_title']),
                                         ),
                                         SizedBox(
                                           height: 20,
@@ -268,8 +290,13 @@ class _ProductPageState extends State<ProductPage> {
   }
 }
 
-Widget _sizeButton(ProductFilter? filter, Store<AppState> store,
-    String sizeActive, bool? isUnit, String? unit) {
+Widget _sizeButton(
+    ProductFilter? filter,
+    Store<AppState> store,
+    String sizeActive,
+    Map<String, dynamic>? styles,
+    bool? isUnit,
+    String? unit) {
   final List<Widget> list = [];
   final lenSize = filter?.size?.length ?? 0;
   if (filter != null && filter.size != null) {
@@ -297,8 +324,8 @@ Widget _sizeButton(ProductFilter? filter, Store<AppState> store,
             ],
           ),
           child: Container(
-            width: 50,
-            height: 50,
+            width: styles!["buttons_size"]["width"],
+            height: styles["buttons_size"]["height"],
             child: Center(
               child: Text(
                 title,
@@ -441,5 +468,41 @@ class _ViewProductPage {
         isLoad: ProductSelectors.isLoad(store.state),
         size: size,
         error: ProductSelectors.error(store.state));
+  }
+}
+
+class ProductMedia {
+  final double media;
+
+  ProductMedia(this.media);
+  static Map<MediaSizeEnum, Map<String, dynamic>> mapMedia() {
+    return {
+      MediaSizeEnum.sm: {
+        "toolbar_height": 90.0,
+        "gallery_title": 22.0,
+        "buttons_size": {
+          "width": 86.0,
+          "height": 86.0,
+        },
+        "counter": {"scale": 1.5, "margin_bottom": 40.0},
+        "title_size": 28.0,
+        "desc_size": 22.0,
+        "circular_height": 800.0,
+        "preview": {"height": 320.0, "width": 320.0, "margin_bottom": 56.0}
+      },
+      MediaSizeEnum.ssm: {
+        "toolbar_height": 60.0,
+        "gallery_title": 16.0,
+        "buttons_size": {
+          "width": 56.0,
+          "height": 56.0,
+        },
+        "counter": {"scale": 1.0, "margin_bottom": 20.0},
+        "title_size": 18.0,
+        "desc_size": 14.0,
+        "circular_height": 526.0,
+        "preview": {"height": 220.0, "width": 220.0, "margin_bottom": 26.0}
+      }
+    };
   }
 }

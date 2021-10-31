@@ -32,6 +32,27 @@ class CartItem {
     return 'CartItem: {name: ${title}, age: ${price}}';
   }
 
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data["id"] = id;
+    if (filter != null) {
+      data["filters"] = filter!.toJson();
+    }
+    data["count"] = count;
+    data["price"] = price;
+    // if (price is int || price is double) {
+    //   data["price"] = price;
+    // } else {
+    //   data["price"] = price.toJson();
+    // }
+
+    data["isUnit"] = isUnit;
+    data["preview"] = preview;
+    data["title"] = title;
+    data["productSize"] = productSize;
+    return data;
+  }
+
   CartItem copyWith({
     title,
     preview,

@@ -48,3 +48,5 @@ app.*.map.json
 
 # ios will place build artifacts here
 
+#my files
+/lib/env.dart
