@@ -66,8 +66,8 @@ class AppRoutes {
         routePath: PathRoute.product,
         route: (context) => ProductPage()),
     RouteItem(
-        titleKey: "Auth",
-        isMenu: true,
+        titleKey: "menu.signin",
+        isMenu: false,
         icon: Icons.pages,
         isPrivate: false,
         routePath: PathRoute.auth,

@@ -8,7 +8,6 @@ import 'package:pizza_time/model/order.model.dart';
 import 'package:pizza_time/model/product.model.dart';
 import 'package:pizza_time/model/user.dart';
 import 'package:pizza_time/redux/state/home/home.model.dart';
-import 'package:pizza_time/redux/state/product/product.model.dart';
 
 enum CallectionWhere { isEqualTo, arrayContains, arrayContainsIsEqualToTop }
 
@@ -29,6 +28,7 @@ class Api {
   var _collectionProducts = FirebaseFirestore.instance.collection('products');
   var _collectionCategories = FirebaseFirestore.instance.collection('cat');
   var _collectionOrders = FirebaseFirestore.instance.collection('orders');
+  var _collectionUsers = FirebaseFirestore.instance.collection('users');
 
   var _auth = FirebaseAuth.instance;
   _apiWhere(CollectionReference<Map<String, dynamic>> collection, String field,
@@ -47,6 +47,49 @@ class Api {
             .get();
       default:
         return collection.limit(limit).get();
+    }
+  }
+
+  Future<ApiData<bool?>> createUserWithEmailAndPassword({
+    required String password,
+    required String email,
+    required String name,
+    required String address,
+    required String phone,
+  }) async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+
+      _collectionUsers.add({
+        "name": name,
+        "email": email,
+        "address": address,
+        "preview": '',
+        "orders": [],
+        "phone": phone,
+        "userID": userCredential.user?.uid,
+      });
+
+      return ApiData<bool?>(
+          data: true, error: "", hashCode: userCredential.hashCode);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        return ApiData(
+            data: null,
+            error: "The password provided is too weak.",
+            hashCode: e.hashCode);
+      } else if (e.code == 'email-already-in-use') {
+        return ApiData(
+            data: null,
+            error: "The account already exists for that email.",
+            hashCode: e.hashCode);
+      }
+      return ApiData(
+          data: null, error: "Error ${e.toString()}", hashCode: e.hashCode);
+    } catch (e) {
+      return ApiData(
+          data: null, error: "Error ${e.toString()}", hashCode: e.hashCode);
     }
   }
 

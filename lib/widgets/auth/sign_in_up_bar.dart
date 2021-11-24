@@ -94,7 +94,7 @@ class _LoadingIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 100),
+      constraints: const BoxConstraints(maxWidth: 30),
       child: Visibility(
         visible: isLoading,
         child: const LinearProgressIndicator(

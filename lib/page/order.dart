@@ -130,11 +130,11 @@ class _OrderPageState extends State<OrderPage>
                                 labelText: 'Email *',
                               ),
                               validator: (value) {
+                                if (!isEmailValid(value ?? "")) {
+                                  return 'Invalid email';
+                                }
                                 if (!isRequired(value)) {
                                   return 'Please enter some text';
-                                }
-                                if (!isEmailValid(value ?? "")) {
-                                  return 'Error email';
                                 }
 
                                 return null;
@@ -188,6 +188,7 @@ class _OrderPageState extends State<OrderPage>
                               snackbar: _snackBar,
                               label: "Address*",
                               value: _address,
+                              isIcon: true,
                               onSetValue: (MapBoxPlace value) {
                                 setState(() {
                                   _address = value.placeName ?? "";
@@ -258,24 +259,38 @@ class _OrderPageState extends State<OrderPage>
   void _onSend() {
     final Store<AppState> store = StoreProvider.of<AppState>(context);
     final List<CartItem> cart = CartSelectors.products(store.state);
-    log(_formKey.currentState.toString());
     if (_formKey.currentState!.validate()) {
-      final test = Api();
-      test
+      final order = Api();
+      order
           .createOrder(OrderModel(
               name: _fullName.text,
               email: _email.text,
               date: _date.text,
               address: _address,
               products: cart))
-          .then((value) => log("OK: ${value}"));
-      ScaffoldMessenger.of(context).showSnackBar(
-        _snackBar("Create order"),
-      );
+          .then((value) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          _snackBar("Create order. The manager will contact you."),
+        );
+        _formKey.currentState?.reset(); // работате только с полем комм.
+        _comments.text = "";
+        _email.text = "";
+        _phone.text = "";
+        _fullName.text = "";
+        _date.text = "";
+        setState(() {
+          _address = "";
+        });
+      }).catchError((e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          _snackBar("Error: ${e.toString()}"),
+        );
+      });
     }
   }
 }
 
+//TODO: вынести в отдельный виджет
 SnackBar _snackBar(String msg) {
   return SnackBar(
     content: Text(msg),

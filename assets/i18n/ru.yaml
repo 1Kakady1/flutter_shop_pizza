@@ -10,6 +10,7 @@ menu:
   home: "Главная"
   products: "Продукты"
   cart: "Корзина"
+  signin: "Войти"
 user:
   acc_not_title: "Еще нет аккаунта?"
   acc_not_sub: "Быстрей заводи его!"

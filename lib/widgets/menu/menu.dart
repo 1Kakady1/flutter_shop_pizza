@@ -83,7 +83,8 @@ class DrawerMenu extends StatelessWidget {
                                 RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8.0),
                                     side: BorderSide(color: Colors.white)))),
-                        onPressed: () => null),
+                        onPressed: () =>
+                            Navigator.pushNamed(context, PathRoute.auth)),
                   ))
             ],
           ),

@@ -13,6 +13,9 @@ class CitySearch extends StatefulWidget {
   final String? hintText;
   final int? limit;
   final String? country;
+  final bool? isIcon;
+  final Color? color;
+  final Color? iconColor;
   final GlobalKey<ScaffoldState>? scaffoldKey;
   final SnackBar Function(String msg)? snackbar;
   CitySearch(
@@ -24,7 +27,10 @@ class CitySearch extends StatefulWidget {
       this.label,
       this.scaffoldKey,
       this.snackbar,
-      this.hintText})
+      this.hintText,
+      this.isIcon,
+      this.iconColor,
+      this.color})
       : super(key: key);
 
   @override
@@ -103,11 +109,23 @@ class _CitySearchState extends State<CitySearch> {
                   return null;
                 },
                 decoration: InputDecoration(
-                  icon: Icon(
-                    Icons.map_outlined,
-                    color: AppColors.black,
-                  ),
+                  icon: widget.isIcon == true
+                      ? Icon(
+                          Icons.map_outlined,
+                          color: widget.color ?? AppColors.black,
+                        )
+                      : null,
                   hintText: widget.hintText,
+                  labelStyle: TextStyle(color: widget.color ?? AppColors.black),
+                  errorStyle: TextStyle(color: widget.color ?? AppColors.black),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                        color: widget.color ?? AppColors.black, width: 2),
+                  ),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide:
+                        BorderSide(color: widget.color ?? AppColors.black),
+                  ),
                   labelText: widget.label,
                   enabled: !isLoadGeo,
                   suffixIcon: IconButton(
@@ -125,11 +143,13 @@ class _CitySearchState extends State<CitySearch> {
                                 strokeWidth: 2.0, color: AppColors.red[200]))
                         : Icon(
                             Icons.add_location_alt_rounded,
-                            color: AppColors.black,
+                            color: widget.iconColor ??
+                                widget.color ??
+                                AppColors.black,
                           ),
                   ),
                 ),
-                //style: const TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(color: widget.color ?? AppColors.black),
               );
             },
             optionsViewBuilder: (BuildContext context,

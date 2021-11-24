@@ -10,6 +10,7 @@ menu:
   home: "Home"
   products: "Products"
   cart: "Cart"
+  signin: "Sign In"
 user:
   acc_not_title: "Don't have an account yet?"
   acc_not_sub: "Start it up quickly!"
