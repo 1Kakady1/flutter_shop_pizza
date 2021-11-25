@@ -13,6 +13,16 @@ class UserSelectors {
     (UserModelState user) => user.isAuth,
   );
 
+  static final isLoad = createSelector1(
+    AppSelectors.userSelector,
+    (UserModelState user) => user.isLoad,
+  );
+
+  static final error = createSelector1(
+    AppSelectors.userSelector,
+    (UserModelState user) => user.error,
+  );
+
   static final toUser = createSelector1(
     AppSelectors.userSelector,
     (UserModelState user) => user,

@@ -40,7 +40,7 @@ String _getAvatarName(bool isAuth, UserCustom info) {
   return nameSplit[0] + nameSplit[1];
 }
 
-ImageProvider<Object> _getAvatar(
+ImageProvider<Object>? _getAvatar(
     bool isAuth, UserCustom info, BuildContext context) {
   final isImageUser = info.preview != null && info.preview != "" ? true : false;
   final ImageProvider? preview = isAuth == true
@@ -49,5 +49,5 @@ ImageProvider<Object> _getAvatar(
           : null
       : AssetImage('assets/img/man.png') as ImageProvider;
 
-  return preview!;
+  return preview;
 }

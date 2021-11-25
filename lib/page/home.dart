@@ -9,6 +9,7 @@ import 'package:pizza_time/styles/colors.dart';
 import 'package:pizza_time/widgets/appbar/appbar.dart';
 import 'package:pizza_time/widgets/carusel-category/carusel-category.home.container.dart';
 import 'package:pizza_time/widgets/popular/popular.container.dart';
+import 'package:pizza_time/widgets/snack/snack.dart';
 import 'package:pizza_time/widgets/user/title/user_title.dart';
 import 'package:redux/redux.dart';
 
@@ -23,6 +24,14 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    final Store<AppState> store =
+        StoreProvider.of<AppState>(context, listen: false);
+    if (store.state.user.isLoad == true) {
+      Future.delayed(const Duration(milliseconds: 1000), () {
+        ScaffoldMessenger.of(context).showSnackBar(
+            snackBar("Вы успешно вошли. Идет загрузка ваших данных..."));
+      });
+    }
     super.initState();
   }
 
@@ -43,7 +52,6 @@ class _HomePageState extends State<HomePage> {
         onRefresh: () {
           store.dispatch(RequestHome(
               isLoad: true, error: "", cat: store.state.home.currentCat));
-          //!TODO: Это должно быть не так
           return Future.delayed(Duration.zero);
         },
         child: LayoutBuilder(

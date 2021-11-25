@@ -1,14 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:pizza_time/api/api.dart';
+import 'package:pizza_time/model/user.dart';
+import 'package:pizza_time/redux/state/user/user.actions.dart';
+import 'package:pizza_time/redux/store.dart';
 import 'package:pizza_time/routes/routes.dart';
 import 'package:pizza_time/styles/colors.dart';
+import 'package:pizza_time/widgets/drawer/drawer.dart';
 import 'package:pizza_time/widgets/user/drawer_info/drawer_info.container.dart';
 
 class DrawerMenu extends StatelessWidget {
+  final bool isAuth;
+  final UserCustom user;
+
+  const DrawerMenu({Key? key, required this.isAuth, required this.user})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
-    final routes = AppRoutes().getRouterList(false);
+    final routes = AppRoutes().getRouterList(isAuth);
     final double queryDataWidth = MediaQuery.of(context).size.width;
     return Material(
       color: AppColors.black,
@@ -61,13 +71,19 @@ class DrawerMenu extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             FaIcon(
-                              FontAwesomeIcons.signInAlt,
+                              isAuth == true
+                                  ? FontAwesomeIcons.signOutAlt
+                                  : FontAwesomeIcons.signInAlt,
                             ),
                             SizedBox(
                               width: 12,
                             ),
                             Text(
-                                FlutterI18n.translate(context, "login.sign_in")
+                                FlutterI18n.translate(
+                                        context,
+                                        isAuth == true
+                                            ? "login.sign_out"
+                                            : "login.sign_in")
                                     .toUpperCase(),
                                 style: TextStyle(
                                     fontSize: queryDataWidth > 600 ? 18 : 12)),
@@ -83,8 +99,17 @@ class DrawerMenu extends StatelessWidget {
                                 RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8.0),
                                     side: BorderSide(color: Colors.white)))),
-                        onPressed: () =>
-                            Navigator.pushNamed(context, PathRoute.auth)),
+                        onPressed: () {
+                          if (isAuth == true) {
+                            Api().signOut().then((value) {
+                              storeApp.dispatch(SetUser(
+                                  false, value.data ?? UserCustom.initial()));
+                            }).catchError((e) {});
+                          } else {
+                            AppDrawer.of(context)!.close();
+                            Navigator.pushNamed(context, PathRoute.auth);
+                          }
+                        }),
                   ))
             ],
           ),

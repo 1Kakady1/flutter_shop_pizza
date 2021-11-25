@@ -7,6 +7,8 @@ import 'package:pizza_time/widgets/carusel-category/carusel-category.effect.dart
 import 'package:pizza_time/redux/effects/popular.effect.dart';
 import 'package:redux_epics/redux_epics.dart';
 
+import 'effects/user.effect.dart';
+
 final epic = combineEpics<AppState>([
   changeCatHomeEpic,
   getHomeContnent,
@@ -14,5 +16,6 @@ final epic = combineEpics<AppState>([
   changeProductsTheCategory,
   effectGetProductByID,
   effectGetProducts,
-  effectGetCategorys
+  effectGetCategorys,
+  setUserEffect
 ]);

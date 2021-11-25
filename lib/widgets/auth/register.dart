@@ -267,12 +267,11 @@ class _RegisterState extends State<Register>
               "You have successfully registered. Go to the login form to log in."));
         }
       }).catchError((e) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(_snackBar("Error to create user: ${e.toString()}"));
-
         setState(() {
           _isLoading = false;
         });
+        ScaffoldMessenger.of(context)
+            .showSnackBar(_snackBar("Error to create user: ${e.toString()}"));
       });
     }
   }

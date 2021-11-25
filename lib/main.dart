@@ -8,6 +8,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:pizza_time/redux/state/home/home.actions.dart';
 import 'package:pizza_time/redux/store.dart';
 import 'package:pizza_time/routes/routes.dart';
+import 'package:pizza_time/routes/routes_auth_contaioner.dart';
 import 'package:pizza_time/styles/theme.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
@@ -63,18 +64,9 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: ThemeConsumer(
-        child: Builder(
-          builder: (themeContext) => MaterialApp(
-            theme: ThemeProvider.themeOf(themeContext).data,
-            localizationsDelegates: [
-              flutterI18nDelegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate
-            ],
-            routes: AppRoutes().getRoutersMap(false),
-          ),
-        ),
-      ),
+          child: RoutsAuthContianer(
+        flutterI18nDelegate: flutterI18nDelegate,
+      )),
     );
   }
 }

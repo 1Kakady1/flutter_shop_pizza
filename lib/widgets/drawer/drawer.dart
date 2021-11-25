@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pizza_time/widgets/menu/menu.dart';
+import 'package:pizza_time/widgets/menu/menu.container.dart';
 
 class AppDrawer extends StatefulWidget {
   final Widget child;
@@ -97,7 +97,7 @@ class _AppDrawerState extends State<AppDrawer>
           double scaleVal = 1 - (animationVal * 0.3);
           return Stack(
             children: <Widget>[
-              DrawerMenu(),
+              DrawerMenuConatainer(),
               Transform(
                 alignment: Alignment.centerLeft,
                 transform: Matrix4.identity()

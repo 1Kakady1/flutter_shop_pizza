@@ -29,8 +29,8 @@ class Api {
   var _collectionCategories = FirebaseFirestore.instance.collection('cat');
   var _collectionOrders = FirebaseFirestore.instance.collection('orders');
   var _collectionUsers = FirebaseFirestore.instance.collection('users');
-
   var _auth = FirebaseAuth.instance;
+
   _apiWhere(CollectionReference<Map<String, dynamic>> collection, String field,
       CallectionWhere type, dynamic value,
       {int limit = 10}) async {
@@ -93,20 +93,20 @@ class Api {
     }
   }
 
-  Future<ApiData<Product?>> getProductById(String id) async {
+  Future<ApiData<UserCustom?>> signOut() async {
     try {
-      var request = await this._collectionProducts.doc(id).get();
-      var map = request.data();
-      map!["id"] = request.id;
-      Product data = Product.fromJson(map);
-      return ApiData<Product>(data: data, error: "", hashCode: data.hashCode);
+      await FirebaseAuth.instance.signOut();
+      return ApiData(data: UserCustom.initial(), error: "", hashCode: 200);
     } catch (e) {
       return ApiData(
-          data: null, error: "Error ${e.toString()}", hashCode: e.hashCode);
+          data: null,
+          error:
+              "Problem when exiting the application. Restart and repeat again",
+          hashCode: 200);
     }
   }
 
-  Future<ApiData<UserCustom?>> signInWithEmailAndPassword(
+  Future<ApiData<bool>> signInWithEmailAndPassword(
       String email, String password) async {
     try {
       final User user = (await _auth.signInWithEmailAndPassword(
@@ -114,17 +114,66 @@ class Api {
         password: password,
       ))
           .user!;
-      //TODO add get user in table users
+
+      //final data = await getUser(user.uid, email);
+      return ApiData(data: true, error: "", hashCode: user.hashCode);
+      ;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        return ApiData(
+            data: false,
+            error: "No user found for that email.",
+            hashCode: e.hashCode);
+      } else if (e.code == 'wrong-password') {
+        return ApiData(
+            data: false,
+            error: "Wrong password provided for that user.",
+            hashCode: e.hashCode);
+      }
+      return ApiData(
+          data: false, error: "Error ${e.toString()}", hashCode: e.hashCode);
+    } catch (e) {
+      return ApiData(
+          data: false, error: "Error ${e.toString()}", hashCode: e.hashCode);
+    }
+  }
+
+  Future<ApiData<UserCustom?>> getUser(String id, String email) async {
+    try {
+      final req = await _collectionUsers.where("userID", isEqualTo: id).get();
+      List<UserCustom> data = [];
+      req.docs.forEach((element) {
+        var doc = element.data();
+        data.add(UserCustom.fromJson(doc));
+      });
+
+      if (data.length == 0 || data[0].id != id) {
+        throw Exception("Not found 404");
+      }
 
       return ApiData<UserCustom>(
           data: UserCustom(
-              address: "",
-              email: user.email ?? "",
-              name: "",
-              preview: "",
-              id: user.uid),
+              address: data[0].address,
+              email: email,
+              name: data[0].name,
+              phone: data[0].phone,
+              preview: data[0].preview,
+              id: id),
           error: "",
-          hashCode: user.hashCode);
+          hashCode: req.hashCode);
+    } catch (e) {
+      return ApiData(
+          data: null, error: "Error ${e.toString()}", hashCode: e.hashCode);
+    }
+  }
+
+  Future<ApiData<Product?>> getProductById(String id) async {
+    try {
+      var request = await this._collectionProducts.doc(id).get();
+      var map = request.data();
+      map!["id"] = request.id;
+      Product data = Product.fromJson(map);
+      return ApiData<Product>(data: data, error: "", hashCode: data.hashCode);
     } catch (e) {
       return ApiData(
           data: null, error: "Error ${e.toString()}", hashCode: e.hashCode);

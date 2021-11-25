@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:pizza_time/api/api.dart';
 import 'package:pizza_time/helpers/decoration_functions.dart';
 import 'package:pizza_time/helpers/form_validator.dart';
+import 'package:pizza_time/routes/routes.dart';
 import 'package:pizza_time/styles/colors.dart';
 import 'package:pizza_time/widgets/auth/sign_in_up_bar.dart';
 import 'package:pizza_time/widgets/auth/title.dart';
@@ -142,9 +144,44 @@ class _SignInState extends State<SignIn>
 
   void _onSend() {
     if (_formKey.currentState!.validate()) {
+      final _api = Api();
       setState(() {
         _isLoading = true;
       });
+      _api
+          .signInWithEmailAndPassword(_email.text, _password.text)
+          .then((value) {
+        if (value.error == "" && value.data != false) {
+          Navigator.popAndPushNamed(context, PathRoute.home);
+        } else {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(_snackBar("Error: ${value.error.toString()}"));
+        }
+        setState(() {
+          _isLoading = false;
+        });
+      }).catchError((e) {
+        setState(() {
+          _isLoading = false;
+        });
+        ScaffoldMessenger.of(context)
+            .showSnackBar(_snackBar("Error: ${e.toString()}"));
+      });
     }
   }
+}
+
+SnackBar _snackBar(String msg) {
+  return SnackBar(
+    content: Text(msg),
+    duration: const Duration(milliseconds: 2000),
+    width: 310.0, // Width of the SnackBar.
+    padding: const EdgeInsets.symmetric(
+      horizontal: 8.0, // Inner padding for SnackBar content.
+    ),
+    behavior: SnackBarBehavior.floating,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10.0),
+    ),
+  );
 }
