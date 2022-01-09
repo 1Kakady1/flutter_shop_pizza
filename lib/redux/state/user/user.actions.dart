@@ -12,6 +12,11 @@ class SetUser {
   SetUser(this.isAuth, this.user);
 }
 
+class ChangeUserAction {
+  final UserCustom user;
+  ChangeUserAction(this.user);
+}
+
 class UserRequestAction {
   bool isLoad;
   String error;

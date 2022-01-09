@@ -8,11 +8,13 @@ class UserAvatar extends StatelessWidget {
   final UserCustom user;
   final bool? isBorder;
   final double? size;
+  final bool? hideName;
   UserAvatar(
       {required this.isAuth,
       required this.user,
       this.isBorder,
-      this.size = 40.0});
+      this.size = 40.0,
+      this.hideName = false});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,7 @@ class UserAvatar extends StatelessWidget {
         radius: size,
         backgroundColor: AppColors.red[300],
         child: Text(
-          _getAvatarName(isAuth, user),
+          hideName == true ? "" : _getAvatarName(isAuth, user),
           style: TextStyle(color: Colors.white),
         ),
         backgroundImage: _getAvatar(isAuth, user, context),

@@ -11,6 +11,7 @@ menu:
   products: "Продукты"
   cart: "Корзина"
   signin: "Войти"
+  profile: "Профиль"
 user:
   acc_not_title: "Еще нет аккаунта?"
   acc_not_sub: "Быстрей заводи его!"
@@ -24,3 +25,11 @@ title:
   cart_empty: "Ваша корзина пуста! Это нужно срочно исправить."
 button:
   go_product: "перейти к продуктам"
+profile:
+  title_tab_one: "Добро пожаловать в профиль!"
+  title_tab_two: "Ваша история заказов"
+  label_tab_setting: "Настройки"
+  label_tab_history: "История"
+  avatar: "Загрузить новый аватар"
+label:
+  uploading: "Загрузка"

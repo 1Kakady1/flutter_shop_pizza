@@ -38,14 +38,17 @@ class _OrderPageState extends State<OrderPage>
   bool isSending = false;
   @override
   void initState() {
+    final Store<AppState> store =
+        StoreProvider.of<AppState>(context, listen: false);
+    final userInfo = store.state.user.info;
     _controller = AnimationController(
         vsync: this, duration: const Duration(seconds: 200));
     _controller.forward();
-    _address = "";
-    _email = TextEditingController(text: "");
-    _phone = TextEditingController(text: "");
+    _address = userInfo.address;
+    _email = TextEditingController(text: userInfo.email);
+    _phone = TextEditingController(text: userInfo.phone);
     _date = TextEditingController(text: "");
-    _fullName = TextEditingController(text: "");
+    _fullName = TextEditingController(text: userInfo.name);
     _comments = TextEditingController(text: "");
     super.initState();
   }

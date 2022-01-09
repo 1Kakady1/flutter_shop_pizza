@@ -11,6 +11,7 @@ menu:
   products: "Products"
   cart: "Cart"
   signin: "Sign In"
+  profile: "Profile"
 user:
   acc_not_title: "Don't have an account yet?"
   acc_not_sub: "Start it up quickly!"
@@ -24,3 +25,11 @@ title:
   cart_empty: "Your shopping cart is empty! This needs to be fixed urgently."
 button:
   go_product: "Go to products"
+profile:
+  title_tab_one: "Welcome to the profile!"
+  title_tab_two: "Your order history"
+  label_tab_setting: "Settings"
+  label_tab_history: "History"
+  avatar: "Upload new avatar"
+label:
+  uploading: "Uploading"

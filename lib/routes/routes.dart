@@ -5,6 +5,7 @@ import 'package:pizza_time/page/home.dart';
 import 'package:pizza_time/page/order.dart';
 import 'package:pizza_time/page/product.dart';
 import 'package:pizza_time/page/products.dart';
+import 'package:pizza_time/page/profile.dart';
 import 'package:pizza_time/widgets/drawer/drawer.dart';
 
 class PathRoute {
@@ -14,6 +15,7 @@ class PathRoute {
   static const String order = "/order";
   static const String cart = "/cart";
   static const String auth = "/auth";
+  static const String profile = "/profile";
 }
 
 class RouteItem {
@@ -79,6 +81,13 @@ class AppRoutes {
         isPrivate: false,
         routePath: PathRoute.order,
         route: (context) => OrderPage()),
+    RouteItem(
+        titleKey: "menu.profile",
+        isMenu: true,
+        icon: Icons.people,
+        isPrivate: true,
+        routePath: PathRoute.profile,
+        route: (context) => ProfilePage()),
   ];
 
   List<RouteItem> getRouterList(bool isAuth) {

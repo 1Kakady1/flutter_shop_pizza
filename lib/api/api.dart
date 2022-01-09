@@ -24,6 +24,21 @@ class ApiData<T> {
   }
 }
 
+class UpdateApiData {
+  final String field;
+  final data;
+
+  UpdateApiData({required this.data, required this.field});
+
+  @override
+  bool operator ==(Object other) {
+    return super == other;
+  }
+
+  @override
+  int get hashCode => super.hashCode;
+}
+
 class Api {
   var _collectionProducts = FirebaseFirestore.instance.collection('products');
   var _collectionCategories = FirebaseFirestore.instance.collection('cat');
@@ -159,6 +174,35 @@ class Api {
               phone: data[0].phone,
               preview: data[0].preview,
               id: id),
+          error: "",
+          hashCode: req.hashCode);
+    } catch (e) {
+      return ApiData(
+          data: null, error: "Error ${e.toString()}", hashCode: e.hashCode);
+    }
+  }
+
+  Future<ApiData<UpdateApiData?>> updateUserField(
+      String userID, String field, dynamic value) async {
+    try {
+      final req =
+          await _collectionUsers.where("userID", isEqualTo: userID).get();
+      List<UserCustom> data = [];
+      String docID = "";
+      req.docs.forEach((element) {
+        var doc = element.data();
+        data.add(UserCustom.fromJson(doc));
+        docID = element.id;
+      });
+
+      if (data.length == 0 || data[0].id != userID || docID == "") {
+        throw Exception("Not found 404");
+      }
+
+      await _collectionUsers.doc(docID).update({field: value});
+
+      return ApiData<UpdateApiData>(
+          data: new UpdateApiData(field: field, data: value),
           error: "",
           hashCode: req.hashCode);
     } catch (e) {
