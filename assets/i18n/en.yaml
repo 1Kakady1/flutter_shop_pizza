@@ -31,5 +31,19 @@ profile:
   label_tab_setting: "Settings"
   label_tab_history: "History"
   avatar: "Upload new avatar"
+  title: "Information about you"
 label:
   uploading: "Uploading"
+  name: "Name"
+  phone: "Phone"
+  email: "Email"
+  address: "Address"
+  date: "Date"
+  comments: "You comments"
+tooltip: 
+  update: 'Update field'
+errors:
+  email: "Invalid email"
+  req: "Please enter some text"
+  phone: "Invalid phone"
+  maxLen: "Message max len"

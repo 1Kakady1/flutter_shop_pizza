@@ -45,11 +45,12 @@ String _getAvatarName(bool isAuth, UserCustom info) {
 ImageProvider<Object>? _getAvatar(
     bool isAuth, UserCustom info, BuildContext context) {
   final isImageUser = info.preview != null && info.preview != "" ? true : false;
+  final ImageProvider fake = AssetImage('assets/img/man.png');
   final ImageProvider? preview = isAuth == true
       ? isImageUser == true
           ? NetworkImage(info.preview!)
-          : null
-      : AssetImage('assets/img/man.png') as ImageProvider;
+          : fake
+      : fake;
 
   return preview;
 }

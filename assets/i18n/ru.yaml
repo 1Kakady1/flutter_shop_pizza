@@ -31,5 +31,19 @@ profile:
   label_tab_setting: "Настройки"
   label_tab_history: "История"
   avatar: "Загрузить новый аватар"
+  title: "Информация о вас"
 label:
   uploading: "Загрузка"
+  name: "Ваше имя"
+  phone: "Ваш телефон"
+  email: "Email"
+  address: "ваш адрес"
+  date: "Дата"
+  comments: "Комментарий"
+tooltip: 
+  update: 'Обновить'
+errors:
+  email: "Неверный email"
+  req: "Поле обязательно для заполнения"
+  phone: "Неверный телефон"
+  maxLen: "Максимальная длина"

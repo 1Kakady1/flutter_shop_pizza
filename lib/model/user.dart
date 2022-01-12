@@ -22,6 +22,17 @@ class UserCustom {
     preview = json["preview"];
   }
 
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data["id"] = id;
+    data["name"] = name;
+    data["preview"] = preview;
+    data["email"] = email;
+    data["address"] = address;
+    data["phone"] = phone;
+    return data;
+  }
+
   factory UserCustom.initial() =>
       UserCustom(name: "", email: "", address: "", id: "", phone: "");
   UserCustom copyWith({email, name, address, preview, id, phone}) {

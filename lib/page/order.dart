@@ -164,7 +164,7 @@ class _OrderPageState extends State<OrderPage>
                                 if (!isEqualsNumber(value?.length ?? 0, 18)) {
                                   return 'Phone error';
                                 }
-                                print("lenghr phone ${value?.length}");
+
                                 return null;
                               },
                             ),

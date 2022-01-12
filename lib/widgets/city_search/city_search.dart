@@ -45,12 +45,12 @@ class _CitySearchState extends State<CitySearch> {
   bool isLoadGeo = false;
   @override
   void initState() {
+    super.initState();
     _controller = TextEditingController();
     _placesSearch = PlacesSearch(
         apiKey: Env.MapboxApiKey,
         limit: widget.limit ?? 5,
         country: widget.country ?? "RU");
-    super.initState();
   }
 
   @override
