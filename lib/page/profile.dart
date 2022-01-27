@@ -1,8 +1,16 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:pizza_time/redux/state/history/history.actions.dart';
+import 'package:pizza_time/redux/store.dart';
 import 'package:pizza_time/styles/colors.dart';
+import 'package:pizza_time/widgets/profile/profile_history/profile_history.container.dart';
 import 'package:pizza_time/widgets/profile/profile_user/profile_user.container.dart';
+import 'package:pizza_time/widgets/snack/snack.dart';
+import 'package:redux/redux.dart';
 
 class ProfilePage extends StatefulWidget {
   ProfilePage({Key? key}) : super(key: key);
@@ -14,6 +22,7 @@ class _ProfilePageState extends State<ProfilePage>
     with SingleTickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   late TabController _controller;
+  late ScrollController _scrollController;
   late String _title;
   @override
   void initState() {
@@ -24,12 +33,15 @@ class _ProfilePageState extends State<ProfilePage>
       vsync: this,
     );
     _controller.addListener(_changeTab);
+    _scrollController = ScrollController()..addListener(_scrollListener);
   }
 
   @override
   void dispose() {
     _controller.removeListener(_changeTab);
+    _scrollController.removeListener(_scrollListener);
     _controller.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -39,6 +51,35 @@ class _ProfilePageState extends State<ProfilePage>
     _title = _controller.index == 0
         ? FlutterI18n.translate(context, "profile.title_tab_one")
         : FlutterI18n.translate(context, "profile.title_tab_two");
+    final Store<AppState> store = StoreProvider.of<AppState>(context);
+    if (store.state.history.isLoad == false) {
+      Future.delayed(Duration(milliseconds: 2000), () {
+        ScaffoldMessenger.of(context).clearSnackBars();
+      });
+    }
+  }
+
+  void _scrollListener() {
+    final Store<AppState> store = StoreProvider.of<AppState>(context);
+    if (_scrollController.position.pixels ==
+            _scrollController.position.maxScrollExtent &&
+        _controller.index == 1 &&
+        store.state.history.error == "" &&
+        store.state.history.isLoad == false) {
+      final Store<AppState> disp =
+          StoreProvider.of<AppState>(context, listen: false);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar("Loading history",
+          isLoad: true,
+          ctx: context,
+          fullWidth: true,
+          duration: Duration(hours: 1),
+          borderRadius: BorderRadius.circular(0)));
+      disp.dispatch(RequestHistoryAction(
+          error: "",
+          isLoad: true,
+          offset: store.state.history.offset,
+          id: store.state.user.info.id));
+    }
   }
 
   void _changeTab() {
@@ -47,19 +88,26 @@ class _ProfilePageState extends State<ProfilePage>
           ? FlutterI18n.translate(context, "profile.title_tab_one")
           : FlutterI18n.translate(context, "profile.title_tab_two");
     });
-    print("change tab ${this._controller.index}");
   }
 
   @override
   Widget build(BuildContext context) {
     final _tabs = [
       TabsItem(
-          body: () => ProfileUserContainer(),
+          body: () => SliverToBoxAdapter(
+                  child: Column(
+                children: [
+                  ProfileUserContainer(),
+                  SizedBox(
+                    height: 260,
+                  )
+                ],
+              )),
           tabID: "profile",
           name: "profile.label_tab_setting"),
       TabsItem(
           tabID: "history",
-          body: () => Center(child: Text("Tab two")),
+          body: () => ProfileHistoryContainer(),
           name: "profile.title_tab_two")
     ];
 
@@ -127,6 +175,7 @@ class _ProfilePageState extends State<ProfilePage>
                 child: Builder(
                   builder: (BuildContext context) {
                     return CustomScrollView(
+                      controller: _scrollController,
                       key: PageStorageKey<String>(item.name),
                       slivers: <Widget>[
                         SliverOverlapInjector(
@@ -134,15 +183,7 @@ class _ProfilePageState extends State<ProfilePage>
                               NestedScrollView.sliverOverlapAbsorberHandleFor(
                                   context),
                         ),
-                        SliverToBoxAdapter(
-                            child: Column(
-                          children: [
-                            item.body(),
-                            SizedBox(
-                              height: 260,
-                            )
-                          ],
-                        )),
+                        item.body(),
                       ],
                     );
                   },

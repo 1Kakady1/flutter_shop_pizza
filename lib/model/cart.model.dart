@@ -4,16 +4,16 @@ typedef ChangeCartItemCommentsType = void Function(
     String id, String size, String? comments);
 
 class CartItem {
-  final String title;
-  final String preview;
-  final String id;
-  final int count;
-  final ProductFilter? filter;
-  final dynamic price;
-  final String? cat;
-  final String? comments;
-  final String productSize;
-  final bool? isUnit;
+  late String title;
+  String? preview;
+  late String id;
+  late int count;
+  late ProductFilter? filter;
+  late dynamic price;
+  late String? cat;
+  late String? comments;
+  late String productSize;
+  late bool? isUnit;
 
   CartItem(
       {required this.title,
@@ -30,6 +30,21 @@ class CartItem {
   @override
   String toString() {
     return 'CartItem: {name: ${title}, age: ${price}}';
+  }
+
+  CartItem.fromJson(Map<String, dynamic> json) {
+    title = json["title"] ?? "";
+    preview = json["preview"] ?? "";
+    id = json["id"] ?? "";
+    count = json["count"] ?? 0;
+    filter = filter = (json["filters"] != null)
+        ? ProductFilter.fromJson(json["filters"])
+        : null;
+    cat = json["cat"] ?? "";
+    comments = json["comments"] ?? "";
+    productSize = json["productSize"] ?? "";
+    isUnit = json["isUnit"] ?? null;
+    price = json['price'] ?? 0;
   }
 
   Map<String, dynamic> toJson() {

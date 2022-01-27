@@ -9,8 +9,8 @@ import 'package:redux/redux.dart';
 class UserAvatarContainer extends StatelessWidget {
   final bool? isBorder;
   final double? size;
-
-  const UserAvatarContainer({Key? key, this.isBorder, this.size})
+  final bool? isTap;
+  const UserAvatarContainer({Key? key, this.isBorder, this.size, this.isTap})
       : super(key: key);
 
   @override
@@ -27,6 +27,7 @@ class UserAvatarContainer extends StatelessWidget {
                 isAuth: vm.isAuth,
                 user: vm.user,
                 isBorder: isBorder,
+                isTap: isTap,
               );
             }));
   }

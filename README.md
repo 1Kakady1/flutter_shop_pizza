@@ -1,16 +1,34 @@
-# pizza_time
+# Pizza time
 
-Shop pizza time
+Application for ordering products
+
+![image home](./assets/img/p1.png)
+![image products](./assets/img/p3.png)
+![image user history](./assets/img/p2.png)
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+- Install flutter and set up a development environment.
+- Add google-services to the desired directory. If necessary, change the settings according to the instructions of firebase.
+- Create env.dart file in lib
+```
+class Env {
+  static const String MapboxApiKey = <YOU_KEY_API>";
+  static const String orderKey = <secret_key>;
+}
+```
+- Replace 'YOU_KEY_API' and 'secret_key' with the received key
 
-A few resources to get you started if this is your first Flutter project:
+## ENV
+- MapboxApiKey - is used to search for a city
+- orderKey - sends the key when placing an order to firebase. You can set any value.
+## Checking work
+Proposition works on android API 30 and 27, but has not been tested on ios
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Some of the libraries used are
+- firebase
+- redux, flutter_redux
+- redux_epics and rxdart
+- mapbox_search
+- geolocator
+- flutter_i18n

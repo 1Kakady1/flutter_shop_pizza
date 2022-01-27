@@ -43,17 +43,22 @@ class DrawerMenu extends StatelessWidget {
                     height: 20,
                   ),
                   ...routes.map(
-                    (route) => ListTile(
-                      onTap: () =>
-                          Navigator.pushNamed(context, route.routePath),
-                      leading: Icon(
-                        route.icon,
-                        size: queryDataWidth > 600 ? 40 : 24,
-                      ),
-                      title: Text(
-                        FlutterI18n.translate(context, route.titleKey),
-                        style:
-                            TextStyle(fontSize: queryDataWidth > 600 ? 24 : 16),
+                    (route) => Padding(
+                      padding: EdgeInsets.symmetric(
+                          vertical: queryDataWidth > 600 ? 10 : 0,
+                          horizontal: 0.0),
+                      child: ListTile(
+                        onTap: () =>
+                            Navigator.pushNamed(context, route.routePath),
+                        leading: Icon(
+                          route.icon,
+                          size: queryDataWidth > 600 ? 40 : 24,
+                        ),
+                        title: Text(
+                          FlutterI18n.translate(context, route.titleKey),
+                          style: TextStyle(
+                              fontSize: queryDataWidth > 600 ? 24 : 16),
+                        ),
                       ),
                     ),
                   )

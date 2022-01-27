@@ -15,8 +15,13 @@ class ApiData<T> {
   final T data;
   final String error;
   final int hashCode;
+  final dynamic offset;
 
-  ApiData({required this.data, required this.error, required this.hashCode});
+  ApiData(
+      {required this.data,
+      required this.error,
+      required this.hashCode,
+      this.offset});
 
   @override
   bool operator ==(Object other) {
@@ -320,6 +325,49 @@ class Api {
         "userID": data.userID ?? 'not_register_user',
       });
       return ApiData<bool>(data: true, error: "", hashCode: rez.hashCode);
+    } catch (e) {
+      return ApiData(
+          data: null, error: "Error ${e.toString()}", hashCode: e.hashCode);
+    }
+  }
+
+  Future<ApiData<List<OrderModel>?>> getOrdersByUsertId(
+      String userID, int limit, dynamic offset) async {
+    try {
+      var rez;
+      if (offset != null) {
+        rez = await _collectionOrders
+            .where("userID", isEqualTo: userID)
+            .orderBy("date", descending: true)
+            .startAfter([offset.data()["date"]])
+            .limit(limit)
+            .get();
+      } else {
+        rez = await _collectionOrders
+            .where("userID", isEqualTo: userID)
+            .orderBy("date", descending: true)
+            .limit(limit)
+            .get();
+      }
+
+      var docs = rez.docs;
+      var lastVisible;
+
+      List<OrderModel> data = [];
+      if (docs.length > 0) {
+        lastVisible = docs[docs.length - 1];
+        docs.forEach((element) {
+          var doc = element.data();
+          doc["date"] = doc["date"].toDate();
+          doc['id'] = element.id;
+          data.add(OrderModel.fromJson(doc));
+        });
+      }
+      return ApiData<List<OrderModel>>(
+          data: data,
+          error: "",
+          hashCode: rez.hashCode,
+          offset: lastVisible ?? offset);
     } catch (e) {
       return ApiData(
           data: null, error: "Error ${e.toString()}", hashCode: e.hashCode);

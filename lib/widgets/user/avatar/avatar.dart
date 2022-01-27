@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pizza_time/model/user.dart';
+import 'package:pizza_time/routes/routes.dart';
 import 'package:pizza_time/styles/colors.dart';
 
 class UserAvatar extends StatelessWidget {
@@ -9,26 +10,35 @@ class UserAvatar extends StatelessWidget {
   final bool? isBorder;
   final double? size;
   final bool? hideName;
+  final bool? isTap;
   UserAvatar(
       {required this.isAuth,
       required this.user,
       this.isBorder,
       this.size = 40.0,
-      this.hideName = false});
+      this.hideName = false,
+      this.isTap});
 
   @override
   Widget build(BuildContext context) {
-    return CircleAvatar(
-      backgroundColor: Colors.white,
-      radius: size != null && isBorder == true ? size! + 3.0 : size,
+    return GestureDetector(
+      onTap: () {
+        if (isTap == true) {
+          Navigator.pushNamed(context, PathRoute.profile);
+        }
+      },
       child: CircleAvatar(
-        radius: size,
-        backgroundColor: AppColors.red[300],
-        child: Text(
-          hideName == true ? "" : _getAvatarName(isAuth, user),
-          style: TextStyle(color: Colors.white),
+        backgroundColor: Colors.white,
+        radius: size != null && isBorder == true ? size! + 3.0 : size,
+        child: CircleAvatar(
+          radius: size,
+          backgroundColor: AppColors.red[300],
+          child: Text(
+            hideName == true ? "" : _getAvatarName(isAuth, user),
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundImage: _getAvatar(isAuth, user, context),
         ),
-        backgroundImage: _getAvatar(isAuth, user, context),
       ),
     );
   }

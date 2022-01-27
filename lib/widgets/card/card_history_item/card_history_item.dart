@@ -1,37 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:marquee/marquee.dart';
 import 'package:pizza_time/helpers/media_query.dart';
 import 'package:pizza_time/helpers/product.utils.dart';
 import 'package:pizza_time/model/cart.model.dart';
+import 'package:pizza_time/routes/routes.dart';
 import 'package:pizza_time/styles/colors.dart';
-import 'package:pizza_time/widgets/card/card_cart_item/card_cart_item.media.dart';
-import 'package:pizza_time/widgets/counter_flat/counter_flat.dart';
+import 'package:pizza_time/widgets/card/card_history_item/card_history_item.media.dart';
 
 typedef Press = void Function();
 
-class CardCartItem extends StatefulWidget {
+class CardHistoryItem extends StatefulWidget {
   final CartItem product;
-  final Press onAdd;
-  final Press onSub;
-  final Press onRemove;
-  final ChangeCartItemCommentsType onChangeComments;
-  final Animation<double> animation;
-  CardCartItem(
-      {Key? key,
-      required this.product,
-      required this.onAdd,
-      required this.onSub,
-      required this.onRemove,
-      required this.onChangeComments,
-      required this.animation})
-      : super(key: key);
+
+  CardHistoryItem({Key? key, required this.product}) : super(key: key);
 
   @override
   _CardCartItemState createState() => _CardCartItemState();
 }
 
-class _CardCartItemState extends State<CardCartItem> {
+class _CardCartItemState extends State<CardHistoryItem> {
   late TextEditingController _controller;
 
   @override
@@ -57,33 +44,28 @@ class _CardCartItemState extends State<CardCartItem> {
     final double mediaWidth =
         MediaQuery.of(context).size.width >= 600 ? 600 : 0;
     final styles = getMediaQueryStyles(MediaQuery.of(context).size.width,
-        MediaSizeEnum.sm, CardCartItemMedia.mapMedia);
+        MediaSizeEnum.sm, CardHistoryItemMedia.mapMedia);
     final TextStyle titileStyle = TextStyle(
         fontSize: styles!["title_font_size"], fontWeight: FontWeight.bold);
     final String sizeTitle = widget.product.isUnit == true
         ? "${(int.parse(widget.product.productSize) / 1000).toString()}"
         : widget.product.productSize.toUpperCase();
-    return ScaleTransition(
-      scale: widget.animation,
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, PathRoute.product,
+            arguments: {"id": widget.product.id, "product": null});
+      },
       child: Container(
         height: styles["container_height"],
-        decoration: BoxDecoration(
-          color: Theme.of(context).backgroundColor,
-          borderRadius: BorderRadius.all(Radius.circular(20)),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.shadow,
-              spreadRadius: 3,
-              blurRadius: 10,
-              offset: Offset(0, 3),
-            ),
-          ],
-        ),
         child: Column(
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                SizedBox(
+                  width: 10,
+                ),
                 ClipRRect(
                     borderRadius: BorderRadius.circular(10.0),
                     child: Stack(children: [
@@ -149,15 +131,15 @@ class _CardCartItemState extends State<CardCartItem> {
                                         widget.product.title,
                                         style: titileStyle,
                                       )),
-                            ConuterFlat(
-                              counter: widget.product.count,
-                              onAdd: widget.onAdd,
-                              onSub: widget.onSub,
-                            )
+                            Container(
+                              width: styles["title_width"],
+                              child: Center(
+                                child: Text(widget.product.count.toString(),
+                                    style:
+                                        Theme.of(context).textTheme.headline2),
+                              ),
+                            ),
                           ],
-                        ),
-                        SizedBox(
-                          width: 6,
                         ),
                         Container(
                           width: styles["price"]["contianer"]["width"],
@@ -165,15 +147,6 @@ class _CardCartItemState extends State<CardCartItem> {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              IconButton(
-                                onPressed: () {
-                                  this.widget.onRemove();
-                                },
-                                icon: FaIcon(
-                                  FontAwesomeIcons.times,
-                                  color: AppColors.red[200],
-                                ),
-                              ),
                               Text(
                                 "\$ $price",
                                 style: Theme.of(context)
@@ -186,6 +159,9 @@ class _CardCartItemState extends State<CardCartItem> {
                               ),
                             ],
                           ),
+                        ),
+                        SizedBox(
+                          width: 8,
                         ),
                       ],
                     ),
@@ -200,10 +176,6 @@ class _CardCartItemState extends State<CardCartItem> {
               margin: EdgeInsets.symmetric(horizontal: 16),
               child: TextField(
                 controller: _controller,
-                onSubmitted: (String value) {
-                  widget.onChangeComments(
-                      widget.product.id, widget.product.productSize, value);
-                },
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Comments',

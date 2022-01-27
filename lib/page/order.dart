@@ -9,12 +9,14 @@ import 'package:pizza_time/helpers/form_validator.dart';
 import 'package:pizza_time/model/cart.model.dart';
 import 'package:pizza_time/model/order.model.dart';
 import 'package:pizza_time/redux/state/cart/cart.selector.dart';
+import 'package:pizza_time/redux/state/history/history.actions.dart';
 import 'package:pizza_time/redux/store.dart';
 import 'package:pizza_time/styles/colors.dart';
 import 'package:pizza_time/widgets/background_painter/background_painter.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:pizza_time/widgets/city_search/city_search.dart';
 import 'package:pizza_time/widgets/input_date/input_date.dart';
+import 'package:pizza_time/widgets/snack/snack.dart';
 import 'package:redux/redux.dart';
 
 class OrderPage extends StatefulWidget {
@@ -75,7 +77,8 @@ class _OrderPageState extends State<OrderPage>
           builder: (BuildContext context, BoxConstraints constraints) {
         final mediaWidth = constraints.maxWidth;
         final mediaHeight = constraints.maxHeight;
-
+        final Store<AppState> store =
+            StoreProvider.of<AppState>(context, listen: false);
         return Stack(
           children: [
             SizedBox.expand(
@@ -88,7 +91,10 @@ class _OrderPageState extends State<OrderPage>
             Center(
               child: Container(
                 width: mediaWidth,
-                height: mediaHeight - 200,
+                constraints: BoxConstraints(
+                    minHeight: 100,
+                    minWidth: double.infinity,
+                    maxHeight: mediaHeight - 200),
                 padding: const EdgeInsets.all(20),
                 margin: const EdgeInsets.all(50),
                 decoration: BoxDecoration(
@@ -188,7 +194,7 @@ class _OrderPageState extends State<OrderPage>
                               height: 10,
                             ),
                             CitySearch(
-                              snackbar: _snackBar,
+                              snackbar: snackBar,
                               label: "Address*",
                               value: _address,
                               isIcon: true,
@@ -270,10 +276,17 @@ class _OrderPageState extends State<OrderPage>
               email: _email.text,
               date: _date.text,
               address: _address,
-              products: cart))
+              products: cart,
+              userID: store.state.user.isAuth == true
+                  ? store.state.user.info.id
+                  : null))
           .then((value) {
+        if (store.state.user.isAuth == true) {
+          store.dispatch(
+              SetHistoryAction(history: [], error: "", isLoad: false));
+        }
         ScaffoldMessenger.of(context).showSnackBar(
-          _snackBar("Create order. The manager will contact you."),
+          snackBar("Create order. The manager will contact you."),
         );
         _formKey.currentState?.reset(); // работате только с полем комм.
         _comments.text = "";
@@ -286,25 +299,9 @@ class _OrderPageState extends State<OrderPage>
         });
       }).catchError((e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          _snackBar("Error: ${e.toString()}"),
+          snackBar("Error: ${e.toString()}"),
         );
       });
     }
   }
-}
-
-//TODO: вынести в отдельный виджет
-SnackBar _snackBar(String msg) {
-  return SnackBar(
-    content: Text(msg),
-    duration: const Duration(milliseconds: 2000),
-    width: 310.0, // Width of the SnackBar.
-    padding: const EdgeInsets.symmetric(
-      horizontal: 8.0, // Inner padding for SnackBar content.
-    ),
-    behavior: SnackBarBehavior.floating,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(10.0),
-    ),
-  );
 }

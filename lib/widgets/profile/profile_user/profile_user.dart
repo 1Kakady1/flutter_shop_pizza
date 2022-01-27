@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
@@ -27,15 +29,39 @@ class ProfileUser extends StatefulWidget {
 class _ProfileUserState extends State<ProfileUser> with InputValidationMixin {
   final _api = new Api();
   late bool _isLoading;
-
+  late bool _isInit;
+  late bool _isFade;
+  late Timer _timer;
+  late Timer _timerInfoFade;
   @override
   void initState() {
     super.initState();
     _isLoading = false;
+    _isInit = false;
+    _isFade = false;
+    _timer = new Timer(
+        Duration(seconds: 1),
+        () => {
+              setState(() => {_isInit = true})
+            });
+
+    _timerInfoFade = new Timer(
+        Duration(seconds: 1, microseconds: 500),
+        () => {
+              setState(() => {_isFade = true})
+            });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    _timerInfoFade.cancel();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final double queryDataWidth = MediaQuery.of(context).size.width;
     var maskFormatter = new MaskTextInputFormatter(
         mask: '+# (###) ###-##-##', filter: {"#": RegExp(r'[0-9]')});
     return Container(
@@ -47,7 +73,7 @@ class _ProfileUserState extends State<ProfileUser> with InputValidationMixin {
           UserAvatar(
             user: widget.user,
             isAuth: true,
-            size: 80,
+            size: queryDataWidth > 600 ? 120 : 80,
             isBorder: true,
             hideName: true,
           ),
@@ -56,77 +82,90 @@ class _ProfileUserState extends State<ProfileUser> with InputValidationMixin {
               widget.onChangeUserInfo(widget.user.copyWith(preview: url));
             });
           }),
-          Container(
-            padding: EdgeInsets.all(20),
-            child: Column(
-              children: [
-                Align(
-                  child: Text(FlutterI18n.translate(context, "profile.title")),
-                  alignment: Alignment.centerLeft,
-                ),
-                Container(
-                  width: double.infinity,
-                  child: ProfileInput(
-                    isLoading: _isLoading,
-                    labelText: FlutterI18n.translate(context, "label.name"),
-                    initValue: widget.user.name,
-                    onSave: (val, callback) {
-                      onUpdate("name", val, callback);
-                    },
-                  ),
-                ),
-                Container(
-                  width: double.infinity,
-                  child: ProfileInput(
-                    isLoading: _isLoading,
-                    labelText: FlutterI18n.translate(context, "label.phone"),
-                    initValue: widget.user.phone,
-                    maskFormatter: maskFormatter,
-                    validator: (String? phone) {
-                      if (!isEqualsNumber(phone?.length ?? 0, 18)) {
-                        return FlutterI18n.translate(context, "errors.phone");
-                      }
+          AnimatedOpacity(
+            opacity: _isFade == true ? 1 : 0,
+            duration: const Duration(milliseconds: 600),
+            child: _isInit == true
+                ? Container(
+                    padding: EdgeInsets.all(20),
+                    child: Column(
+                      children: [
+                        Align(
+                          child: Text(
+                              FlutterI18n.translate(context, "profile.title")),
+                          alignment: Alignment.centerLeft,
+                        ),
+                        Container(
+                          width: double.infinity,
+                          child: ProfileInput(
+                            isLoading: _isLoading,
+                            labelText:
+                                FlutterI18n.translate(context, "label.name"),
+                            initValue: widget.user.name,
+                            onSave: (val, callback) {
+                              onUpdate("name", val, callback);
+                            },
+                          ),
+                        ),
+                        Container(
+                          width: double.infinity,
+                          child: ProfileInput(
+                            isLoading: _isLoading,
+                            labelText:
+                                FlutterI18n.translate(context, "label.phone"),
+                            initValue: widget.user.phone,
+                            maskFormatter: maskFormatter,
+                            validator: (String? phone) {
+                              if (!isEqualsNumber(phone?.length ?? 0, 18)) {
+                                return FlutterI18n.translate(
+                                    context, "errors.phone");
+                              }
 
-                      return null;
-                    },
-                    onSave: (val, callback) {
-                      onUpdate("phone", val, callback);
-                    },
-                  ),
-                ),
-                Container(
-                  width: double.infinity,
-                  child: ProfileInput(
-                    isLoading: _isLoading,
-                    labelText: FlutterI18n.translate(context, "label.email"),
-                    initValue: widget.user.email,
-                    validator: (String? value) {
-                      if (!isEmailValid(value ?? "")) {
-                        return FlutterI18n.translate(context, "errors.email");
-                      }
+                              return null;
+                            },
+                            onSave: (val, callback) {
+                              onUpdate("phone", val, callback);
+                            },
+                          ),
+                        ),
+                        Container(
+                          width: double.infinity,
+                          child: ProfileInput(
+                            isLoading: _isLoading,
+                            labelText:
+                                FlutterI18n.translate(context, "label.email"),
+                            initValue: widget.user.email,
+                            validator: (String? value) {
+                              if (!isEmailValid(value ?? "")) {
+                                return FlutterI18n.translate(
+                                    context, "errors.email");
+                              }
 
-                      return null;
-                    },
-                    onSave: (val, callback) {
-                      onUpdate("email", val, callback);
-                    },
-                  ),
-                ),
-                Container(
-                  width: double.infinity,
-                  child: ProfileInput(
-                    searchCity: true,
-                    isLoading: _isLoading,
-                    labelText: FlutterI18n.translate(context, "label.address"),
-                    initValue: widget.user.address,
-                    onSave: (val, callback) {
-                      onUpdate("address", val, callback);
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
+                              return null;
+                            },
+                            onSave: (val, callback) {
+                              onUpdate("email", val, callback);
+                            },
+                          ),
+                        ),
+                        Container(
+                          width: double.infinity,
+                          child: ProfileInput(
+                            searchCity: true,
+                            isLoading: _isLoading,
+                            labelText:
+                                FlutterI18n.translate(context, "label.address"),
+                            initValue: widget.user.address,
+                            onSave: (val, callback) {
+                              onUpdate("address", val, callback);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : SizedBox(),
+          )
         ],
       ),
     );

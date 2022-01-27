@@ -87,7 +87,7 @@ class CartPanel extends StatelessWidget {
                     ],
                   ),
                   SizedBox(
-                    height: 20,
+                    height: 15,
                   ),
                   ButtonDefault(
                       decoration: BoxDecoration(
@@ -104,7 +104,7 @@ class CartPanel extends StatelessWidget {
                           "Proceed to payment method",
                           style: TextStyle(color: AppColors.write),
                         ),
-                      ))
+                      )),
                 ],
               ));
         });

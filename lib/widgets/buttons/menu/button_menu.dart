@@ -15,7 +15,7 @@ class ButtonMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double queryData = MediaQuery.of(context).size.width;
-    final double size = queryData > 600 ? iconSize! + 20.0 : iconSize!;
+    final double size = queryData > 600 ? iconSize! + 15.0 : iconSize!;
     return IconButton(
       iconSize: size,
       icon: SvgPicture.asset(

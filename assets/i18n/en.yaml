@@ -23,6 +23,7 @@ not_found: "Not found products"
 title:
   gallery: "How delicious it looks"
   cart_empty: "Your shopping cart is empty! This needs to be fixed urgently."
+  order: "Date order:"
 button:
   go_product: "Go to products"
 profile:

@@ -1,15 +1,15 @@
 import 'package:pizza_time/helpers/media_query.dart';
 
-class CardCartItemMedia {
+class CardHistoryItemMedia {
   final double media;
 
-  CardCartItemMedia(this.media);
+  CardHistoryItemMedia(this.media);
 
   static Map<MediaSizeEnum, Map<String, dynamic>> mapMedia() {
     return {
       MediaSizeEnum.sm: {
-        "container_height": 300.0,
-        "size_img": 200.0,
+        "container_height": 200.0,
+        "size_img": 120.0,
         "title_width": 260.0,
         "title_font_size": 30.0,
         "bookmark": {
@@ -22,12 +22,12 @@ class CardCartItemMedia {
         "price": {
           "size": 30.0,
           "size_unit": 20.0,
-          "contianer": {"width": 120.0}
+          "contianer": {"width": 130.0}
         }
       },
       MediaSizeEnum.ssm: {
-        "container_height": 230.0,
-        "size_img": 140.0,
+        "container_height": 200.0,
+        "size_img": 100.0,
         "title_width": 110.0,
         "title_font_size": 18.0,
         "bookmark": {
@@ -41,7 +41,7 @@ class CardCartItemMedia {
           "container_height": 120.0,
           "size": 20.0,
           "size_unit": 10.0,
-          "contianer": {"width": 80.0}
+          "contianer": {"width": 100.0}
         }
       }
     };

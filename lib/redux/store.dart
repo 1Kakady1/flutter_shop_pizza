@@ -3,6 +3,8 @@ import 'package:pizza_time/redux/state/cart/cart.model.dart';
 import 'package:pizza_time/redux/state/cart/cart.reducer.dart';
 import 'package:pizza_time/redux/state/category/category.model.dart';
 import 'package:pizza_time/redux/state/category/category.reducer.dart';
+import 'package:pizza_time/redux/state/history/history.model.dart';
+import 'package:pizza_time/redux/state/history/history.reducer.dart';
 import 'package:pizza_time/redux/state/home/home.model.dart';
 import 'package:pizza_time/redux/state/home/home.reducer.dart';
 import 'package:pizza_time/redux/state/product/product.model.dart';
@@ -23,22 +25,25 @@ class AppState {
   final HomeModelState home;
   final CartModelState cart;
   final ProductModelState product;
+  final HistoryModelState history;
   AppState(
       {required this.user,
       required this.products,
       required this.category,
       required this.home,
       required this.cart,
-      required this.product});
+      required this.product,
+      required this.history});
 
-  AppState copyWith({user, products, category, home, cart, product}) {
+  AppState copyWith({user, products, category, home, cart, product, history}) {
     return AppState(
         user: user ?? this.user,
         products: products ?? this.products,
         category: category ?? this.category,
         home: home ?? this.home,
         cart: cart ?? this.cart,
-        product: product ?? this.product);
+        product: product ?? this.product,
+        history: history ?? this.history);
   }
 }
 
@@ -50,7 +55,8 @@ AppState _reducer(AppState state, dynamic action) => AppState(
     product: productReducer(state.product, action),
     category: categorysReducer(state.category, action),
     home: homeReducer(state.home, action),
-    cart: cartReducer(state.cart, action));
+    cart: cartReducer(state.cart, action),
+    history: historyReducer(state.history, action));
 
 AppState _state = AppState(
   home: HomeModelState.initial(),
@@ -59,6 +65,7 @@ AppState _state = AppState(
   category: CategoryModelState.initial(),
   cart: CartModelState.initial(),
   product: ProductModelState.initial(),
+  history: HistoryModelState.initial(),
 );
 
 Store<AppState> storeApp = Store(_reducer,
@@ -76,4 +83,5 @@ class AppSelectors {
   static CategoryModelState categorySelector(AppState state) => state.category;
   static HomeModelState homeSelector(AppState state) => state.home;
   static CartModelState cartSelector(AppState state) => state.cart.copyWith();
+  static HistoryModelState historySelector(AppState state) => state.history;
 }

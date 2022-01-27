@@ -56,7 +56,9 @@ class _CustomAppBarState extends State<CustomAppBar> {
             ? SizedBox()
             : Container(
                 padding: widget.paddingActions ?? EdgeInsets.all(0),
-                child: UserAvatarContainer())
+                child: UserAvatarContainer(
+                  isTap: true,
+                ))
       ],
       leading: Container(
         child: Row(
